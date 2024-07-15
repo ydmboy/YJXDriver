@@ -1,0 +1,27 @@
+﻿生成启动时间为 2024/7/4 16:44:26。
+     1>项目“c:\code\YJXDriver\YJXDriver\YJXDriver.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>_PrepareForClean:
+         正在删除文件“Debug\YJXDriver.tlog\YJXDriver.lastbuildstate”。
+       CleanOutput:
+         正在删除文件“Debug\YJXDriver.tlog\unsuccessfulbuild”。
+         正在移除目录“Debug\YJXDriver.tlog\”。
+       DriverBuildNotifications:
+         Building 'YJXDriver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
+         Using KMDF 1.15.
+       PrepareForBuild:
+         正在创建目录“Debug\YJXDriver.tlog\”。
+       InitializeBuildStatus:
+         正在创建“Debug\YJXDriver.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+     1>C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets(482,5): error MSB6004: 指定的任务可执行文件位置“C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x86\stampinf.exe”无效。
+     1>已完成生成项目“c:\code\YJXDriver\YJXDriver\YJXDriver.vcxproj”(Rebuild 个目标)的操作 - 失败。
+
+生成失败。
+
+       “c:\code\YJXDriver\YJXDriver\YJXDriver.vcxproj”(Rebuild 目标) (1) ->
+       (StampInf 目标) -> 
+         C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets(482,5): error MSB6004: 指定的任务可执行文件位置“C:\Program Files (x86)\Windows Kits\10\bin\10.0.16299.0\x86\stampinf.exe”无效。
+
+    0 个警告
+    1 个错误
+
+已用时间 00:00:00.02
