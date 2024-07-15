@@ -27,6 +27,7 @@ NTSTATUS DispatchRoutine(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
         case IOCTL_EXAMPLE:
             // ´¦Àí IOCTL_EXAMPLE
             status = STATUS_SUCCESS;
+			DbgPrint("IRP_MJ_DEVICE_CONTROL_IOCTL_EXAMPLE_STATUS_SUCCESS\n");
             break;
 
         default:
@@ -140,7 +141,7 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	NTSTATUS status = STATUS_SUCCESS;
 
-	CHECK_STATUS(status = IoCreateDevice(DriverObject, 0, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
+	CHECK_STATUS(status = IoCreateDevice(DriverObject, sizeof(DriverObject->DriverExtension), pUnicode_Device_String, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, DeviceObject));
 	CHECK_STATUS(status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutine;
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutine;
@@ -153,7 +154,6 @@ CLEANUP:
 	{
 		IoDeleteDevice(*DeviceObject);
 		*DeviceObject = NULL;
-		DeviceObject = NULL;
 	}
 	return status;
 }
@@ -165,6 +165,12 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
 	DriverObject->DriverUnload = DriverUnload;
+	UNICODE_STRING deviceStr = { 0 };
+	UNICODE_STRING symblicStr = { 0 };
+	PDEVICE_OBJECT deviceObj = NULL;
+	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
+    RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
+	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
 
 	return STATUS_SUCCESS;
 }
