@@ -141,7 +141,16 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	NTSTATUS status = STATUS_SUCCESS;
 
-	CHECK_STATUS(status = IoCreateDevice(DriverObject, sizeof(DriverObject->DriverExtension), pUnicode_Device_String, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, DeviceObject));
+	//__try
+	//{
+
+		CHECK_STATUS(status = IoCreateDevice(DriverObject,0 /*sizeof(DriverObject->DriverExtension)*/, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
+	//}
+	//__except(EXCEPTION_EXECUTE_HANDLER )
+	//{
+	//	DbgPrint("EXCEPTION_EXECUTE_HANDLER");
+	//	goto CLEANUP;
+	//}
 	CHECK_STATUS(status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutine;
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutine;
