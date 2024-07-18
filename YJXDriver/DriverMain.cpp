@@ -144,12 +144,13 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 	//__try
 	//{
 
-		CHECK_STATUS(status = IoCreateDevice(DriverObject,0 /*sizeof(DriverObject->DriverExtension)*/, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
+		//CHECK_STATUS(status = IoCreateDevice(DriverObject,0 /*sizeof(DriverObject->DriverExtension)*/, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
+		CHECK_STATUS(status = IoCreateDevice(DriverObject, 0 /*sizeof(DriverObject->DriverExtension)*/, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, NULL));
 	//}
 	//__except(EXCEPTION_EXECUTE_HANDLER )
 	//{
-	//	DbgPrint("EXCEPTION_EXECUTE_HANDLER");
-	//	goto CLEANUP;
+		DbgPrint("EXCEPTION_EXECUTE_HANDLER");
+		goto CLEANUP;
 	//}
 	CHECK_STATUS(status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutine;
@@ -166,6 +167,13 @@ CLEANUP:
 	}
 	return status;
 }
+
+
+//void IoDeleteDevice(
+//  [in] PDEVICE_OBJECT DeviceObject
+//);
+//extern "C"
+//NTSTATUS  DeleteDevice()
 
 
 extern "C"
