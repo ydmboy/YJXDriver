@@ -11,6 +11,12 @@ NTSTATUS DispatchRoutine(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 
     PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
     NTSTATUS status = STATUS_SUCCESS;
+	ULONG inputBufferLength, outputBufferLength;
+	PVOID inputBuffer, outputBuffer;
+	inputBufferLength = stack->Parameters.DeviceIoControl.InputBufferLength;
+	outputBufferLength = stack->Parameters.DeviceIoControl.OutputBufferLength;
+	inputBuffer = Irp->AssociatedIrp.SystemBuffer;
+	outputBuffer = Irp->AssociatedIrp.SystemBuffer;
 
     switch (stack->MajorFunction)
     {
@@ -25,11 +31,18 @@ NTSTATUS DispatchRoutine(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
         switch (stack->Parameters.DeviceIoControl.IoControlCode)
         {
         case IOCTL_EXAMPLE:
-            // ´¦Àí IOCTL_EXAMPLE
-            status = STATUS_SUCCESS;
-			DbgPrint("IRP_MJ_DEVICE_CONTROL_IOCTL_EXAMPLE_STATUS_SUCCESS\n");
-            break;
+		{
+			DbgPrint("%s", (char*)inputBuffer);
+			KdPrint(("IOCTL_EXAMPLE received\n"));
+			DbgPrint("OutputBufferLength:%d", outputBufferLength);
+			RtlCopyMemory(Irp->AssociatedIrp.SystemBuffer, "ooppqq", strlen("ooppqq"));
+			DbgPrint("SystemBuffer:%s",Irp->AssociatedIrp.SystemBuffer);
+			//outputBufferLength = stack->Parameters.DeviceIoControl.OutputBufferLength; = strlen("ooppqq")
+			Irp->IoStatus.Information = strlen("ooppqq");
+			Irp->IoStatus.Information = status;
 
+			break;
+		}
         default:
             status = STATUS_INVALID_DEVICE_REQUEST;
             break;
@@ -45,36 +58,6 @@ NTSTATUS DispatchRoutine(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
         break;
     }
 
-    IoCompleteRequest(Irp, IO_NO_INCREMENT);
-    return status;
-}
-
-extern "C"
-NTSTATUS DriverIoControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
-{
-    PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-    NTSTATUS status = STATUS_SUCCESS;
-
-    UNREFERENCED_PARAMETER(DeviceObject);
-
-    switch (stack->Parameters.DeviceIoControl.IoControlCode)
-    {
-		case IRP_MJ_CREATE:
-			DbgPrint("IRP_MJ_CREATE \n");
-			break;
-		case IRP_MJ_CLOSE:
-			DbgPrint("IRP_MJ_CLOSE\n");
-			break;
-        case IOCTL_EXAMPLE:
-            KdPrint(("IOCTL_EXAMPLE received\n"));
-            break;
-        default:
-            status = STATUS_INVALID_DEVICE_REQUEST;
-            break;
-    }
-
-    Irp->IoStatus.Status = status;
-    Irp->IoStatus.Information = 0;
     IoCompleteRequest(Irp, IO_NO_INCREMENT);
     return status;
 }
@@ -141,18 +124,13 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	NTSTATUS status = STATUS_SUCCESS;
 
-	//__try
-	//{
+	CHECK_STATUS(status ,status =IoCreateDevice(DriverObject,  sizeof(DriverObject->DriverExtension), pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
 
-		//CHECK_STATUS(status = IoCreateDevice(DriverObject,0 /*sizeof(DriverObject->DriverExtension)*/, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
-		CHECK_STATUS(status = IoCreateDevice(DriverObject, 0 /*sizeof(DriverObject->DriverExtension)*/, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, NULL));
-	//}
-	//__except(EXCEPTION_EXECUTE_HANDLER )
-	//{
-		DbgPrint("EXCEPTION_EXECUTE_HANDLER");
-		goto CLEANUP;
-	//}
-	CHECK_STATUS(status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
+	CHECK_STATUS(status,status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
+
+
+	//EXCEPTION_ACCESS_VIOLATION
+
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutine;
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutine;
 	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutine;

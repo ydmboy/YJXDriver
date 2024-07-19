@@ -22,24 +22,28 @@ void SendIoctlExample()
 	}
 
 	DWORD bytesReturned;
+	char x[] = "ydmboy";
+	char y[20] = { 0 };
 	BOOL success = DeviceIoControl(
 		hDevice,
 		IOCTL_EXAMPLE,
-		nullptr, 0,   // No input buffer
-		nullptr, 0,   // No output buffer
+		x,strlen(x),   // No input buffer
+		y, sizeof(y),   // No output buffer
 		&bytesReturned,
 		nullptr
 	);
 
 	if (success)
 	{
-		std::cout << "IOCTL_EXAMPLE request sent successfully." << std::endl;
+
+		std::cout << "IOCTL_EXAMPLE request sent successfully." <<"Input:"<<x<< std::endl;
 	}
 	else
 	{
 		std::cerr << "Failed to send IOCTL_EXAMPLE request: " << GetLastError() << std::endl;
 	}
-
+	std::cout << "OUTPUT:"<<y<<std::endl;
+	std::cout << "RtNum:" << bytesReturned << std::endl;
 	CloseHandle(hDevice);
 }
 
