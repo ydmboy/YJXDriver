@@ -1,82 +1,5 @@
-#include <wdm.h>
-#include "MacroUtils.h"
-#define IOCTL_EXAMPLE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
-
-
-extern "C"
-NTSTATUS DispatchRoutine(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
-{
-    UNREFERENCED_PARAMETER(DeviceObject);
-
-    PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-    NTSTATUS status = STATUS_SUCCESS;
-
-    switch (stack->MajorFunction)
-    {
-    case IRP_MJ_CREATE:
-    case IRP_MJ_CLOSE:
-        Irp->IoStatus.Status = STATUS_SUCCESS;
-        Irp->IoStatus.Information = 0;
-        break;
-
-    case IRP_MJ_DEVICE_CONTROL:
-        // 处理 I/O 控制码
-        switch (stack->Parameters.DeviceIoControl.IoControlCode)
-        {
-        case IOCTL_EXAMPLE:
-            // 处理 IOCTL_EXAMPLE
-            status = STATUS_SUCCESS;
-            break;
-
-        default:
-            status = STATUS_INVALID_DEVICE_REQUEST;
-            break;
-        }
-        Irp->IoStatus.Status = status;
-        Irp->IoStatus.Information = 0;
-        break;
-
-    default:
-        status = STATUS_INVALID_DEVICE_REQUEST;
-        Irp->IoStatus.Status = status;
-        Irp->IoStatus.Information = 0;
-        break;
-    }
-
-    IoCompleteRequest(Irp, IO_NO_INCREMENT);
-    return status;
-}
-
-extern "C"
-NTSTATUS DriverIoControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
-{
-    PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-    NTSTATUS status = STATUS_SUCCESS;
-
-    UNREFERENCED_PARAMETER(DeviceObject);
-
-    switch (stack->Parameters.DeviceIoControl.IoControlCode)
-    {
-		case IRP_MJ_CREATE:
-			DbgPrint("IRP_MJ_CREATE \n");
-			break;
-		case IRP_MJ_CLOSE:
-			DbgPrint("IRP_MJ_CLOSE\n");
-			break;
-        case IOCTL_EXAMPLE:
-            KdPrint(("IOCTL_EXAMPLE received\n"));
-            break;
-        default:
-            status = STATUS_INVALID_DEVICE_REQUEST;
-            break;
-    }
-
-    Irp->IoStatus.Status = status;
-    Irp->IoStatus.Information = 0;
-    IoCompleteRequest(Irp, IO_NO_INCREMENT);
-    return status;
-}
+#include "AppDriverComm.h"
+#include "CommonHeader.h"
 
 extern "C"
 void DriverUnload(PDRIVER_OBJECT DriverObject)
@@ -135,28 +58,41 @@ extern "C"
 NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 	_In_ PUNICODE_STRING pUnicode_Device_String,
 	_In_ PUNICODE_STRING pUnicode_SymbolicLinkName,
-	_Outptr_ PDEVICE_OBJECT * DeviceObject)
+	_Outptr_ PDEVICE_OBJECT  DeviceObject)
 {
 
 	NTSTATUS status = STATUS_SUCCESS;
 
-	CHECK_STATUS(status = IoCreateDevice(DriverObject, 0, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
-	CHECK_STATUS(status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
-	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutine;
-	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutine;
-	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutine;
-	(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
+	CHECK_STATUS(status ,status =IoCreateDevice(DriverObject,  sizeof(DriverObject->DriverExtension), pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, &DeviceObject));
+
+	CHECK_STATUS(status,status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
+
+
+	//EXCEPTION_ACCESS_VIOLATION
+
+	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineDirect;
+	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutineDirect;
+	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineDirect;
+	DeviceObject->Flags &= ~DO_DEVICE_INITIALIZING;
+	//DeviceObject->Flags |= DO_BUFFERED_IO;
+
 	return status;
 
 CLEANUP:
-	if (DeviceObject && *DeviceObject)
+	if (DeviceObject && DeviceObject)
 	{
-		IoDeleteDevice(*DeviceObject);
-		*DeviceObject = NULL;
+		IoDeleteDevice(DeviceObject);
 		DeviceObject = NULL;
 	}
 	return status;
 }
+
+
+//void IoDeleteDevice(
+//  [in] PDEVICE_OBJECT DeviceObject
+//);
+//extern "C"
+//NTSTATUS  DeleteDevice()
 
 
 extern "C"
@@ -165,6 +101,13 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
 	DriverObject->DriverUnload = DriverUnload;
+	UNICODE_STRING deviceStr = { 0 };
+	UNICODE_STRING symblicStr = { 0 };
+	PDEVICE_OBJECT deviceObj = NULL;
+	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
+    RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
+	CreateDevice(DriverObject,&deviceStr, &symblicStr,deviceObj);
 
-	return STATUS_SUCCESS;
+	//return STATUS_SUCCESS;
+	return STATUS_INVALID_DEVICE_REQUEST;
 }

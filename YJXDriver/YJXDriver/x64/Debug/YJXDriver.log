@@ -1,25 +1,35 @@
-﻿生成启动时间为 2024/7/15 11:23:29。
+﻿生成启动时间为 2024/7/30 17:20:39。
      1>项目“C:\code\DriverYJX\YJXDriver\YJXDriver\YJXDriver.vcxproj”在节点 2 上(Rebuild 个目标)。
      1>_PrepareForClean:
          正在删除文件“x64\Debug\YJXDriver.tlog\YJXDriver.lastbuildstate”。
+       CleanOutput:
+         正在删除文件“x64\Debug\YJXDriver.tlog\unsuccessfulbuild”。
+         正在移除目录“x64\Debug\YJXDriver.tlog\”。
        DriverBuildNotifications:
          Building 'YJXDriver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
          Using KMDF 1.15.
        PrepareForBuild:
-         正在创建目录“C:\code\DriverYJX\YJXDriver\x64\Debug\”。
+         正在创建目录“x64\Debug\YJXDriver.tlog\”。
        InitializeBuildStatus:
          正在创建“x64\Debug\YJXDriver.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        StampInf:
          C:\Program Files (x86)\Windows Kits\10\bin\10.0.17134.0\x86\stampinf.exe -d "*" -a "amd64" -v "*" -k "1.15"  -x -f x64\Debug\YJXDriver.inf 
          Copying "C:\code\DriverYJX\YJXDriver\YJXDriver\YJXDriver.inf" to "x64\Debug\YJXDriver.inf" for stamping
          Stamping x64\Debug\YJXDriver.inf
-         Stamping [Version] section with DriverVer=07/15/2024,11.23.29.292
+         Stamping [Version] section with DriverVer=07/30/2024,17.20.39.99
          正在将文件从“x64\Debug\YJXDriver.inf”复制到“C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.inf”。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\CL.exe /c /Ix64\Debug\ /Zi /JMC /nologo /W4 /WX- /diagnostics:classic /Od /Oi /Oy- /D _WIN64 /D _AMD64_ /D AMD64 /D DEPRECATE_DDK_FUNCTIONS=1 /D MSC_NOOPT /D _WIN32_WINNT=0x0A00 /D WINVER=0x0A00 /D WINNT=1 /D NTDDI_VERSION=0x0A000005 /D DBG=1 /GF /Gm- /Zp8 /GS /guard:cf /Gy /fp:precise /Zc:wchar_t- /Zc:forScope /Zc:inline /GR- /Fo"x64\Debug\\" /Fd"x64\Debug\vc141.pdb" /Gz /wd4748 /wd4603 /wd4627 /wd4986 /wd4987 /wd4996 /FI"C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared\warning.h" /FC /errorReport:prompt /kernel -cbstring -d2epilogunwind /d1import_no_registry /d2AllowCompatibleILVersions /d2Zi+ /Qspectre DriverMain.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\CL.exe /c /Ix64\Debug\ /Zi /JMC /nologo /W4 /WX- /diagnostics:classic /Od /Oi /Oy- /D _WIN64 /D _AMD64_ /D AMD64 /D DEPRECATE_DDK_FUNCTIONS=1 /D MSC_NOOPT /D _WIN32_WINNT=0x0A00 /D WINVER=0x0A00 /D WINNT=1 /D NTDDI_VERSION=0x0A000005 /D DBG=1 /GF /Gm- /Zp8 /GS /guard:cf /Gy /fp:precise /Zc:wchar_t- /Zc:forScope /Zc:inline /GR- /Fo"x64\Debug\\" /Fd"x64\Debug\vc141.pdb" /Gz /wd4748 /wd4603 /wd4627 /wd4986 /wd4987 /wd4996 /FI"C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared\warning.h" /FC /errorReport:prompt /kernel -cbstring -d2epilogunwind /d1import_no_registry /d2AllowCompatibleILVersions /d2Zi+ /Qspectre AppDriverComm.cpp DriverMain.cpp
+         AppDriverComm.cpp
+     1>c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(35): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+     1>c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(71): warning C4995: “MmGetSystemAddressForMdl”: 名称被标记为 #pragma deprecated
+     1>c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(65): warning C4189: “stack”: 局部变量已初始化但不引用
+     1>c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(68): warning C4189: “outputBuffer”: 局部变量已初始化但不引用
          DriverMain.cpp
+         正在生成代码...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.sys" /VERSION:"10.0" /INCREMENTAL:NO /NOLOGO /WX /SECTION:"INIT,d" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\BufferOverflowFastFailK.lib" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\ntoskrnl.lib" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\hal.lib" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\wmilib.lib" /NODEFAULTLIB /MANIFEST:NO /DEBUG:FASTLINK /PDB:"C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.pdb" /SUBSYSTEM:NATIVE,"10.00" /Driver /OPT:REF /OPT:ICF /ENTRY:"GsDriverEntry" /RELEASE /IMPLIB:"C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.lib" /MERGE:"_TEXT=.text;_PAGE=PAGE" /MACHINE:X64 /PROFILE /guard:cf /kernel /IGNORE:4198,4010,4037,4039,4065,4070,4078,4087,4089,4221,4108,4088,4218,4218,4235 /osversion:10.0 /pdbcompress /debugtype:pdata x64\Debug\DriverMain.obj
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.sys" /VERSION:"10.0" /INCREMENTAL:NO /NOLOGO /WX /SECTION:"INIT,d" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\BufferOverflowFastFailK.lib" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\ntoskrnl.lib" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\hal.lib" "C:\Program Files (x86)\Windows Kits\10\lib\10.0.17134.0\km\x64\wmilib.lib" /NODEFAULTLIB /MANIFEST:NO /DEBUG:FASTLINK /PDB:"C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.pdb" /SUBSYSTEM:NATIVE,"10.00" /Driver /OPT:REF /OPT:ICF /ENTRY:"GsDriverEntry" /RELEASE /IMPLIB:"C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.lib" /MERGE:"_TEXT=.text;_PAGE=PAGE" /MACHINE:X64 /PROFILE /guard:cf /kernel /IGNORE:4198,4010,4037,4039,4065,4070,4078,4087,4089,4221,4108,4088,4218,4218,4235 /osversion:10.0 /pdbcompress /debugtype:pdata x64\Debug\AppDriverComm.obj
+         x64\Debug\DriverMain.obj
          YJXDriver.vcxproj -> C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.sys
      1>项目“C:\code\DriverYJX\YJXDriver\YJXDriver\YJXDriver.vcxproj”(1)正在节点 2 上生成“C:\code\DriverYJX\YJXDriver\YJXDriver\YJXDriver.vcxproj”(1:2) (TestSign 个目标)。
      1>TestSign:
@@ -50,8 +60,6 @@
          Requested by project: 
          
          
-         正在创建目录“C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver”。
-         正在创建目录“C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver”。
          正在将文件从“C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver.sys”复制到“C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver\\YJXDriver.sys”。
          正在将文件从“x64\Debug\YJXDriver.inf”复制到“C:\code\DriverYJX\YJXDriver\x64\Debug\YJXDriver\\YJXDriver.inf”。
        Inf2Cat:
@@ -84,7 +92,15 @@
      1>已完成生成项目“C:\code\DriverYJX\YJXDriver\YJXDriver\YJXDriver.vcxproj”(Rebuild 个目标)的操作。
 
 已成功生成。
-    0 个警告
+
+       “C:\code\DriverYJX\YJXDriver\YJXDriver\YJXDriver.vcxproj”(Rebuild 目标) (1) ->
+       (ClCompile 目标) -> 
+         c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(35): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+         c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(71): warning C4995: “MmGetSystemAddressForMdl”: 名称被标记为 #pragma deprecated
+         c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(65): warning C4189: “stack”: 局部变量已初始化但不引用
+         c:\code\driveryjx\yjxdriver\yjxdriver\appdrivercomm.cpp(68): warning C4189: “outputBuffer”: 局部变量已初始化但不引用
+
+    4 个警告
     0 个错误
 
-已用时间 00:00:02.17
+已用时间 00:00:01.25

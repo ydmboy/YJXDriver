@@ -34,14 +34,15 @@
 *.sys
 
 
-   Debug/
-   Release/
-   x64/
-   x86/
-   *.obj
-   *.exe
-   *.pdb
-   *.ilk
+Debug/
+Release/
+.vs/
+x64/
+x86/
+*.obj
+*.exe
+*.pdb
+*.ilk
 
 
 
