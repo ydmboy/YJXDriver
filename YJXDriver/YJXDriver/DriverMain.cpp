@@ -72,7 +72,7 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineBuffer;
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutineDirect;
-	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineDirect;
+	//DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineBuffer;
 	(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
 	//DeviceObject->Flags |= DO_BUFFERED_IO;
 

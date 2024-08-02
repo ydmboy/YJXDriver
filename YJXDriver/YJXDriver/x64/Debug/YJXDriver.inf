@@ -7,7 +7,7 @@ Signature="$WINDOWS NT$"
 Class=System
 ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
 Provider=%ManufacturerName%
-DriverVer = 07/31/2024,18.15.35.312
+DriverVer = 08/01/2024,9.52.15.721
 CatalogFile=YJXDriver.cat
 
 [DestinationDirs]
