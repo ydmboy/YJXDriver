@@ -34,11 +34,11 @@
 *.sys
 
 
-Debug/
-Release/
-.vs/
-x64/
-x86/
+**/Debug/
+**/Release/
+**/.vs/
+**/x64/
+**/x86/
 *.obj
 *.exe
 *.pdb
