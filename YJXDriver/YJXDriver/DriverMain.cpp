@@ -9,12 +9,14 @@ void DriverUnload(PDRIVER_OBJECT DriverObject)
 	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
 	IoDeleteSymbolicLink(&smLinkCode);
 	PDEVICE_OBJECT pdObj = DriverObject->DeviceObject;
+	UnistallAllProcessType();
 	if (pdObj)
 	{
 		IoDeleteDevice(DriverObject->DeviceObject);
 		pdObj->NextDevice;
 	}
 }
+
 extern "C"
 NTSTATUS DriverCreateClose(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 {
@@ -49,10 +51,6 @@ BOOLEAN IsValidUnicodeString(PUNICODE_STRING pstr)
 
     return TRUE;
 }
-
-
-
-
 
 extern "C"
 NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
@@ -98,6 +96,7 @@ CLEANUP:
 extern "C"
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING RegistryPath)
 {
+
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
 	DriverObject->DriverUnload = DriverUnload;
@@ -108,6 +107,6 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
     RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
-	
+	setMemoryProtect();
 	return STATUS_SUCCESS;
 }
