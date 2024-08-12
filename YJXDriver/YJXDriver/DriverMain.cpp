@@ -108,5 +108,6 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
     RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
 	setMemoryProtect();
+	ListProcessTypeCallbacks();
 	return STATUS_SUCCESS;
 }
