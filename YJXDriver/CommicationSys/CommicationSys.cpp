@@ -2,6 +2,11 @@
 #include <iostream>
 
 #define IOCTL_EXAMPLE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#pragma comment(lib,"./lib/spdlogd.lib")
+
+#include "include/spdlog/spdlog.h"
+#include "include/spdlog/sinks/basic_file_sink.h"
+
 
 void SendIoctlExample()
 {
@@ -52,7 +57,17 @@ void SendIoctlExample()
 
 int main()
 {
-	SendIoctlExample();
+    auto logger = spdlog::basic_logger_mt("basic_logger", "logs/logfile.txt");
+
+    // 设置日志级别
+    logger->set_level(spdlog::level::info);
+
+    // 写日志
+    logger->info("Welcome to spdlog!");
+    logger->error("This is an error message");
+
+    // 清理所有日志器
+    spdlog::drop_all();
 	return 0;
 }
 

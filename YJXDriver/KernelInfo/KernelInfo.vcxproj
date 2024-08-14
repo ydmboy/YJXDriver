@@ -76,6 +76,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\code\DriverYJX\YJXDriver\KernelInfo\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -190,6 +191,7 @@
     <ClInclude Include="CKernelInfoList.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CSystemHooksDialog.h" />
+    <ClInclude Include="DriverComm.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="KernelInfo.h" />
     <ClInclude Include="KernelInfoDlg.h" />
@@ -200,6 +202,7 @@
   <ItemGroup>
     <ClCompile Include="CKernelInfoList.cpp" />
     <ClCompile Include="CSystemHooksDialog.cpp" />
+    <ClCompile Include="DriverComm.cpp" />
     <ClCompile Include="KernelInfo.cpp" />
     <ClCompile Include="KernelInfoDlg.cpp" />
     <ClCompile Include="pch.cpp">
