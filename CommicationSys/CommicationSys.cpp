@@ -20,9 +20,11 @@ void SendIoctlExample()
 		std::cerr << "Failed to open device: " << GetLastError() << std::endl;
 		return;
 	}
-
+	return;
+	CloseHandle(hDevice);
+	return;
 	DWORD bytesReturned;
-	char x[] = "ydmboy";
+	char x[] = "ydmboy11";
 	char y[20] = { 0 };
 	BOOL success = DeviceIoControl(
 		hDevice,
@@ -30,18 +32,19 @@ void SendIoctlExample()
 		x,strlen(x),   // No input buffer
 		y, sizeof(y),   // No output buffer
 		&bytesReturned,
-		nullptr
+		(LPOVERLAPPED) NULL
 	);
 
 	if (success)
 	{
-
 		std::cout << "IOCTL_EXAMPLE request sent successfully." <<"Input:"<<x<< std::endl;
+		std::cout << "SizeOfX" <<sizeof(y)<< std::endl;
 	}
 	else
 	{
 		std::cerr << "Failed to send IOCTL_EXAMPLE request: " << GetLastError() << std::endl;
 	}
+	printf("Return:%d",bytesReturned);
 	std::cout << "OUTPUT:"<<y<<std::endl;
 	std::cout << "RtNum:" << bytesReturned << std::endl;
 	CloseHandle(hDevice);

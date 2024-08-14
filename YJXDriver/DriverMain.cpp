@@ -1,81 +1,22 @@
-#include <wdm.h>
-#include "MacroUtils.h"
-#define IOCTL_EXAMPLE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
-
-
-extern "C"
-NTSTATUS DispatchRoutine(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
-{
-    UNREFERENCED_PARAMETER(DeviceObject);
-
-    PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-    NTSTATUS status = STATUS_SUCCESS;
-	ULONG inputBufferLength, outputBufferLength;
-	PVOID inputBuffer, outputBuffer;
-	inputBufferLength = stack->Parameters.DeviceIoControl.InputBufferLength;
-	outputBufferLength = stack->Parameters.DeviceIoControl.OutputBufferLength;
-	inputBuffer = Irp->AssociatedIrp.SystemBuffer;
-	outputBuffer = Irp->AssociatedIrp.SystemBuffer;
-
-    switch (stack->MajorFunction)
-    {
-    case IRP_MJ_CREATE:
-    case IRP_MJ_CLOSE:
-        Irp->IoStatus.Status = STATUS_SUCCESS;
-        Irp->IoStatus.Information = 0;
-        break;
-
-    case IRP_MJ_DEVICE_CONTROL:
-        // ´¦Àí I/O ¿ØÖÆÂë
-        switch (stack->Parameters.DeviceIoControl.IoControlCode)
-        {
-        case IOCTL_EXAMPLE:
-		{
-			DbgPrint("%s", (char*)inputBuffer);
-			KdPrint(("IOCTL_EXAMPLE received\n"));
-			DbgPrint("OutputBufferLength:%d", outputBufferLength);
-			RtlCopyMemory(Irp->AssociatedIrp.SystemBuffer, "ooppqq", strlen("ooppqq"));
-			DbgPrint("SystemBuffer:%s",Irp->AssociatedIrp.SystemBuffer);
-			//outputBufferLength = stack->Parameters.DeviceIoControl.OutputBufferLength; = strlen("ooppqq")
-			Irp->IoStatus.Information = strlen("ooppqq");
-			Irp->IoStatus.Information = status;
-
-			break;
-		}
-        default:
-            status = STATUS_INVALID_DEVICE_REQUEST;
-            break;
-        }
-        Irp->IoStatus.Status = status;
-        Irp->IoStatus.Information = 0;
-        break;
-
-    default:
-        status = STATUS_INVALID_DEVICE_REQUEST;
-        Irp->IoStatus.Status = status;
-        Irp->IoStatus.Information = 0;
-        break;
-    }
-
-    IoCompleteRequest(Irp, IO_NO_INCREMENT);
-    return status;
-}
+#include "AppDriverComm.h"
+#include "CommonHeader.h"
 
 extern "C"
 void DriverUnload(PDRIVER_OBJECT DriverObject)
 {
     UNICODE_STRING SymbolicLinkName = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
     IoDeleteSymbolicLink(&SymbolicLinkName);
-	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"asd\\asd");
+	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
 	IoDeleteSymbolicLink(&smLinkCode);
 	PDEVICE_OBJECT pdObj = DriverObject->DeviceObject;
+	UnistallAllProcessType();
 	if (pdObj)
 	{
 		IoDeleteDevice(DriverObject->DeviceObject);
 		pdObj->NextDevice;
 	}
 }
+
 extern "C"
 NTSTATUS DriverCreateClose(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 {
@@ -111,15 +52,11 @@ BOOLEAN IsValidUnicodeString(PUNICODE_STRING pstr)
     return TRUE;
 }
 
-
-
-
-
 extern "C"
 NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 	_In_ PUNICODE_STRING pUnicode_Device_String,
 	_In_ PUNICODE_STRING pUnicode_SymbolicLinkName,
-	_Outptr_ PDEVICE_OBJECT * DeviceObject)
+	_Outptr_ PDEVICE_OBJECT*  DeviceObject)
 {
 
 	NTSTATUS status = STATUS_SUCCESS;
@@ -131,17 +68,19 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	//EXCEPTION_ACCESS_VIOLATION
 
-	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutine;
-	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutine;
-	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutine;
+	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineBuffer;
+	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutineDirect;
+	//DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineBuffer;
 	(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
+	//DeviceObject->Flags |= DO_BUFFERED_IO;
+
 	return status;
 
 CLEANUP:
 	if (DeviceObject && *DeviceObject)
 	{
 		IoDeleteDevice(*DeviceObject);
-		*DeviceObject = NULL;
+		DeviceObject = NULL;
 	}
 	return status;
 }
@@ -157,15 +96,18 @@ CLEANUP:
 extern "C"
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING RegistryPath)
 {
+
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
 	DriverObject->DriverUnload = DriverUnload;
+	DbgPrint("DriverEntry\n");
 	UNICODE_STRING deviceStr = { 0 };
 	UNICODE_STRING symblicStr = { 0 };
 	PDEVICE_OBJECT deviceObj = NULL;
 	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
     RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
-
+	setMemoryProtect();
+	ListProcessTypeCallbacks();
 	return STATUS_SUCCESS;
 }

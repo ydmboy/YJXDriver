@@ -142,7 +142,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <TreatWarningAsError>false</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
     </ClCompile>
+    <Link>
+      <AdditionalOptions>/INTEGRITYCHECK %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Inf Include="YJXDriver.inf" />
@@ -151,10 +155,19 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppDriverComm.cpp" />
     <ClCompile Include="DriverMain.cpp" />
+    <ClCompile Include="ExportFunc.cpp" />
+    <ClCompile Include="GlobalVariables.cpp" />
+    <ClCompile Include="SecurityAgent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppDriverComm.h" />
+    <ClInclude Include="CommonHeader.h" />
+    <ClInclude Include="ExportFunc.h" />
+    <ClInclude Include="GlobalVariables.h" />
     <ClInclude Include="MacroUtils.h" />
+    <ClInclude Include="SecurityAgent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
