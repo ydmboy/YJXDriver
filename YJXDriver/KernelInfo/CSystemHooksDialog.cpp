@@ -21,7 +21,7 @@ void CSystemHooksDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CSystemHooksDialog, CDialogEx)
-	//ON_WM_SIZE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 BOOL CSystemHooksDialog::OnInitDialog()

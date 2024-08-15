@@ -9,10 +9,17 @@ CKernelInfoList::~CKernelInfoList()
 
 }
 
-void CKernelInfoList::AdjustColumns()
+void CKernelInfoList::AdjustColumns(UINT nType, int cx, int cy)
 {
 	int colCount = this->GetHeaderCtrl()->GetItemCount();
 
+	if (this->GetSafeHwnd())
+    {
+        // 调整 CListCtrl 的大小，使其占据整个对话框
+        // 设置边距，例如：上、左为 10 像素，右、下为 10 像素
+        int margin = 10;
+       this->MoveWindow(margin, margin, cx - 2 * margin, cy - 2 * margin);
+    }
     for (int i = 0; i < colCount; ++i)
     {
         // 先根据内容调整列宽
@@ -33,15 +40,9 @@ void CKernelInfoList::OnSize(UINT nType, int cx, int cy)
 {
     CListCtrl::OnSize(nType, cx, cy);
 	// 确保控件存在
-    if (this->GetSafeHwnd())
-    {
-        // 调整 CListCtrl 的大小，使其占据整个对话框
-        // 设置边距，例如：上、左为 10 像素，右、下为 10 像素
-        int margin = 10;
-       this->MoveWindow(margin, margin, cx - 2 * margin, cy - 2 * margin);
-    }
+
 	if (this->GetSafeHwnd())
-		AdjustColumns();
+		AdjustColumns(nType,cx,cy);
 }
 
 void CKernelInfoList::SetDataByKernel()
