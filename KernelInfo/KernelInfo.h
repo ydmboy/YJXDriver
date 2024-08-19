@@ -9,6 +9,7 @@
 #endif
 
 #include "resource.h"		// 主符号
+#include "DriverComm.h"
 
 
 // CKernelInfoApp:
@@ -18,11 +19,13 @@
 class CKernelInfoApp : public CWinApp
 {
 public:
+	
 	CKernelInfoApp();
 
 // 重写
 public:
 	virtual BOOL InitInstance();
+	DriverComm dc;
 
 // 实现
 

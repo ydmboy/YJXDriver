@@ -130,4 +130,54 @@ typedef struct _OB_CALLBACK
 }OB_CALLBACK,*POB_CALLBACK;
 
 
+
+
+typedef struct _OBJECT_TYPE_FLAGS {
+	UCHAR CaseInsensitive : 1;
+	UCHAR UnnamedObjectsOnly : 1;
+	UCHAR UseDefaultObject : 1;
+	UCHAR SecurityRequired : 1;
+	UCHAR MaintainHandleCount : 1;
+	UCHAR MaintainTypeList : 1;
+	UCHAR SupportsObjectCallbacks : 1;
+	UCHAR CacheAligned : 1;
+}OBJECT_TYPE_FLAGS, * P_OBJECT_TYPE_FLAGS;
+ 
+ 
+typedef struct _OBJECT_TYPE_INITIALIZER {
+	USHORT				wLength;
+	OBJECT_TYPE_FLAGS	ObjectTypeFlags;
+	ULONG				ObjcetTypeCode;
+	ULONG				InvalidAttributes;
+	GENERIC_MAPPING		GenericMapping;
+	ULONG				ValidAccessMask;
+	ULONG				RetainAccess;
+	ULONG				PoolType;
+	ULONG				DefaultPagedPoolCharge;
+	ULONG				DefaultNonPagedPoolCharge;
+	PVOID				DumpProcedure;
+	PVOID				OpenProcedure;
+	PVOID				CloseProcedure;
+	PVOID				DeleteProcedure;
+	PVOID				ParseProcedure;
+	PVOID				SecurityProcedure;
+	PVOID				QueryNameProcedure;
+	PVOID				OkayToCloseProcedure;
+}OBJECT_TYPE_INITIALIZER, * POBJECT_TYPE_INITIALIZER;
+ 
+typedef struct _OBJECT_TYPE_EX {
+	LIST_ENTRY					TypeList;
+	UNICODE_STRING				Name;
+	ULONGLONG					DefaultObject;
+	ULONG						Index;
+	ULONG						TotalNumberOfObjects;
+	ULONG						TotalNumberOfHandles;
+	ULONG						HighWaterNumberOfObjects;
+	ULONG						HighWaterNumberOfHandles;
+	OBJECT_TYPE_INITIALIZER		TypeInfo;
+	ULONGLONG					TypeLock;
+	ULONG						Key;
+	LIST_ENTRY					CallbackList;
+}OBJECT_TYPE_EX, * POBJECT_TYPE_EX;
+
 #endif

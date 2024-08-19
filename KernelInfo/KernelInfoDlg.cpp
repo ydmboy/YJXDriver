@@ -77,75 +77,15 @@ BOOL CKernelInfoDlg::OnInitDialog()
 
 	m_HooksListCtrl.SetDataByKernel();
 	//ShowWindow(SW_MINIMIZE);
-
-// Set Max window  ON
-
-		// 获取当前窗口的样式
-    //LONG lStyle = GetWindowLong(m_hWnd, GWL_STYLE);
-
-    //// 确保窗口可以最大化
-    //lStyle |= WS_MAXIMIZEBOX | WS_THICKFRAME;
-
-    //// 设置窗口样式
-    //SetWindowLong(m_hWnd, GWL_STYLE, lStyle);
-
-    //// 将对话框设置为最大化
-    //ShowWindow(SW_SHOWMAXIMIZED);
-
-// Set Max window  OFF
-
-
-// 
-	//CSystemHooksDialog dlg;
- //   dlg.DoModal();
-
-
-	// 绑定 CListCtrl 控件
-    //m_HooksListCtrl.SubclassDlgItem(IDC_LIST_HOOKS, this);
-
-    //// 设置 CListCtrl 的扩展样式和列
- //   m_HooksListCtrl.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-		// 添加列
-
-
-
-	//CRect rect;
- //   GetClientRect(&rect);
- //   int cx = rect.Width();
- //   int cy = rect.Height();
-
-	//    if (m_HooksListCtrl.GetSafeHwnd())
- //   {
- //       // 调整 CListCtrl 的大小，使其占据整个对话框
- //       // 设置边距，例如：上、左为 10 像素，右、下为 10 像素
- //       int margin = 10;
- //       m_HooksListCtrl.MoveWindow(margin, margin, cx - 2 * margin, cy - 2 * margin);
- //   }
-	//if (m_HooksListCtrl.GetSafeHwnd())
- //   {
- //       int margin = 10;
- //       m_HooksListCtrl.MoveWindow(margin, margin, cx - 2 * margin, cy - 2 * margin);
-
- //       // 动态调整列宽（这里假设所有列等宽）
- //       int colCount = m_HooksListCtrl.GetHeaderCtrl()->GetItemCount();
-	//	int colWidth = 0;
-	//	if (colCount)
-	//		colWidth = (cx - 2 * margin) / colCount;
- //       for (int i = 0; i < colCount; ++i)
- //       {
- //           m_HooksListCtrl.SetColumnWidth(i, colWidth);
- //       }
- //   }
-
-
-
-	
-
-
-
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
+
+void CKernelInfoDlg::OnSize(UINT nType, int cx, int cy)
+{
+	if(m_HooksListCtrl.GetSafeHwnd())
+	m_HooksListCtrl.AdjustColumns(nType,cx,cy);
+}
 
 
 
