@@ -11,6 +11,7 @@
 #include <iostream>
 #include "framework.h"
 #include "config.h"
+#include "CommonFunctions.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
 

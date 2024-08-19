@@ -1,5 +1,6 @@
 #include "AppDriverComm.h"
 #include "CommonHeader.h"
+#include "ListInfo.h"
 
 extern "C"
 void DriverUnload(PDRIVER_OBJECT DriverObject)
@@ -109,5 +110,10 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
 	setMemoryProtect();
 	ListProcessTypeCallbacks();
+
+	ListInfo li;
+	//li.PrintObjectTypeInfo();
+	li.PrintObTypeIndexList(li.GetObTypeIndexTable());
+
 	return STATUS_SUCCESS;
 }

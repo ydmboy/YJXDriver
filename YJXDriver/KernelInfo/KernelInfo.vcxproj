@@ -189,6 +189,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CKernelInfoList.h" />
+    <ClInclude Include="CommonFunctions.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="CSystemHooksDialog.h" />
     <ClInclude Include="DriverComm.h" />
@@ -201,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CKernelInfoList.cpp" />
+    <ClCompile Include="CommonFunctions.cpp" />
     <ClCompile Include="CSystemHooksDialog.cpp" />
     <ClCompile Include="DriverComm.cpp" />
     <ClCompile Include="KernelInfo.cpp" />

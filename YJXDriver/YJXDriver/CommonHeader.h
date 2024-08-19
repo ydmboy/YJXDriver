@@ -17,7 +17,6 @@
 #include <wdm.h>
 #include "MacroUtils.h"
 #include "SecurityAgent.h"
-#include "CommonHeader.h"
 #include "ExportFunc.h"
 
 #endif

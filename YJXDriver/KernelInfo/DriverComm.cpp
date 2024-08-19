@@ -7,14 +7,10 @@
 
 DriverComm::DriverComm()
 {
-	 m_file_logger = spdlog::basic_logger_mt("basic_logger", "logs/logfile.txt");
 }
 
 void DriverComm::SendIoctlExample()
 {
-
-	auto logger_a = spdlog::basic_logger_mt("logger_a", "logs/module_a.log");
-	logger_a->set_level(spdlog::level::info);
 	HANDLE hDevice = CreateFile(
 		L"\\\\.\\ExampleDevice",   // 与驱动程序中的符号链接名称匹配
 		GENERIC_READ | GENERIC_WRITE,
@@ -24,13 +20,9 @@ void DriverComm::SendIoctlExample()
 		0,
 		nullptr
 	);
-
 	if (hDevice == INVALID_HANDLE_VALUE)
 	{
-
-		spdlog::set_level(spdlog::level::err);
-		spdlog::error("INVALID_HANDLE_VALUE\n");
-		m_file_logger->info("asd");
+		Error("ERROR:INVALID_HANDLE_VALUE,\tFILE:{},\tLine:{}\n", __FILE__, __LINE__);
 		return;
 	}
 	DWORD bytesReturned;
@@ -47,18 +39,11 @@ void DriverComm::SendIoctlExample()
 
 	if (success)
 	{
-
-		auto logger_a = spdlog::basic_logger_mt("logger_a", "logs/module_a.log");
-		logger_a->set_level(spdlog::level::info);
-
-		spdlog::set_level(spdlog::level::info);
-		spdlog::error("IOCTL_EXAMPLE request sent successfully.input:%d",x);
-		spdlog::error("SIZEOF%x", sizeof(y));
-		m_file_logger->info("asd");
+		Error("IOCTL_EXAMPLE request sent successfully.input:%d", x);
 	}
 	else
 	{
-		spdlog::error("Failed to send IOCTL_EXAMPLE request: \n" );
+		Error("Failed to send IOCTL_EXAMPLE request: \n" );
 	}
 	CloseHandle(hDevice);
 }

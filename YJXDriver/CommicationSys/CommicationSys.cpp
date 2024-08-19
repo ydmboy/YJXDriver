@@ -1,73 +1,57 @@
-﻿#include <windows.h>
-#include <iostream>
+﻿#include <iostream>
 
-#define IOCTL_EXAMPLE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)
-#pragma comment(lib,"./lib/spdlogd.lib")
+class MyClass {
+public:
+	// 构造函数
+	MyClass(int size) : size(size), data(new int[size]) {
+		std::cout << "Constructor called\n";
+	}
 
-#include "include/spdlog/spdlog.h"
-#include "include/spdlog/sinks/basic_file_sink.h"
+	// 移动构造函数
+	MyClass(MyClass&& other) noexcept : size(other.size), data(other.data) {
+		std::cout << "Move constructor called\n";
 
+		// 转移资源所有权
+		other.size = 0;
+		other.data = nullptr;
+	}
+	MyClass(int x)
+	{
 
-void SendIoctlExample()
+	}
+
+	// 析构函数
+	~MyClass() {
+		delete[] data;
+	}
+
+	// 打印内容
+	void print() const {
+		std::cout << "Size: " << size << "\n";
+	}
+
+private:
+	int size;
+	int* data;
+};
+
+class fClass
 {
-	HANDLE hDevice = CreateFile(
-		L"\\\\.\\ExampleDevice",   // 与驱动程序中的符号链接名称匹配
-		GENERIC_READ | GENERIC_WRITE,
-		0,
-		nullptr,
-		OPEN_EXISTING,
-		0,
-		nullptr
-	);
+public:
+	fClass();
+	fClass(fClass& x) {
+		m_x = x.m_x;
+	}
+private:
+	int m_x;
+};
 
-	if (hDevice == INVALID_HANDLE_VALUE)
-	{
-		std::cerr << "Failed to open device: " << GetLastError() << std::endl;
-		return;
-	}
-	return;
-	CloseHandle(hDevice);
-	return;
-	DWORD bytesReturned;
-	char x[] = "ydmboy11";
-	char y[20] = { 0 };
-	BOOL success = DeviceIoControl(
-		hDevice,
-		IOCTL_EXAMPLE,
-		x,strlen(x),   // No input buffer
-		y, sizeof(y),   // No output buffer
-		&bytesReturned,
-		(LPOVERLAPPED) NULL
-	);
-
-	if (success)
-	{
-		std::cout << "IOCTL_EXAMPLE request sent successfully." <<"Input:"<<x<< std::endl;
-		std::cout << "SizeOfX" <<sizeof(y)<< std::endl;
-	}
-	else
-	{
-		std::cerr << "Failed to send IOCTL_EXAMPLE request: " << GetLastError() << std::endl;
-	}
-	printf("Return:%d",bytesReturned);
-	std::cout << "OUTPUT:"<<y<<std::endl;
-	std::cout << "RtNum:" << bytesReturned << std::endl;
-	CloseHandle(hDevice);
+int main() {
+	MyClass obj1(10);         // 调用普通构造函数
+	MyClass obj2(std::move(obj1));  // 调用移动构造函数
+	MyClass obj2 = MyClass(10);
+	obj2.print();  // 打印 obj2 的内容
+	// obj1 的资源已经被转移，data 现在为 nullptr，size 为 0
 }
 
-int main()
-{
-    auto logger = spdlog::basic_logger_mt("basic_logger", "logs/logfile.txt");
-
-    // 设置日志级别
-    logger->set_level(spdlog::level::info);
-
-    // 写日志
-    logger->info("Welcome to spdlog!");
-    logger->error("This is an error message");
-
-    // 清理所有日志器
-    spdlog::drop_all();
-	return 0;
-}
 

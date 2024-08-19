@@ -45,6 +45,9 @@
     <ClInclude Include="DriverComm.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CommonFunctions.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KernelInfo.cpp">
@@ -63,6 +66,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DriverComm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonFunctions.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
