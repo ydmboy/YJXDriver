@@ -33,6 +33,8 @@
 *.app
 *.sys
 
+# log
+*.log
 
 **/Debug/
 **/Release/

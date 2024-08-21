@@ -1,0 +1,1 @@
+[2024-08-16 18:09:26.025] [logger] [info] This is a test log entry.
