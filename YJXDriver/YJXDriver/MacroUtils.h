@@ -39,6 +39,9 @@
 
 
 
+// LOG
+#define MAX_TYPE_OBJECT_TYPE_DEPTH 100
+
 
 #define EX_PUSH_LOCK ULONG_PTR
 
@@ -179,5 +182,12 @@ typedef struct _OBJECT_TYPE_EX {
 	ULONG						Key;
 	LIST_ENTRY					CallbackList;
 }OBJECT_TYPE_EX, * POBJECT_TYPE_EX;
+
+
+typedef struct _ObjectTypeInfo {
+    ULONG Index;                // 索引
+    POBJECT_TYPE* ObjectType;   // 对应的全局变量指针
+    const char* Name;           // 对象类型的名称
+} ObjectTypeInfo;
 
 #endif

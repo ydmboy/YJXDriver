@@ -47,11 +47,7 @@ private:
 };
 
 int main() {
-	MyClass obj1(10);         // 调用普通构造函数
-	MyClass obj2(std::move(obj1));  // 调用移动构造函数
-	MyClass obj2 = MyClass(10);
-	obj2.print();  // 打印 obj2 的内容
-	// obj1 的资源已经被转移，data 现在为 nullptr，size 为 0
+
 }
 
 
