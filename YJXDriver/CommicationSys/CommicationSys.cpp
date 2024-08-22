@@ -46,8 +46,14 @@ private:
 	int m_x;
 };
 
-int main() {
 
+typedef struct _ObjectTypeInfo {
+    char* Name;           // 对象类型的名称
+} ObjectTypeInfo;
+
+int main() {
+	_ObjectTypeInfo ObTypeINf;
+	ObTypeINf.Name = "asd";
 }
 
 
