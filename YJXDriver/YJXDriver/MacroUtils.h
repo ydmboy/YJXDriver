@@ -187,7 +187,7 @@ typedef struct _OBJECT_TYPE_EX {
 typedef struct _ObjectTypeInfo {
     ULONG Index;                // 索引
     POBJECT_TYPE* ObjectType;   // 对应的全局变量指针
-    const char* Name;           // 对象类型的名称
+    PUNICODE_STRING Name;           // 对象类型的名称
 } ObjectTypeInfo;
 
 #endif

@@ -8,6 +8,8 @@ public:
 	PVOID GetObTypeIndexTable();
 	void PrintObTypeIndexList(PVOID pObTypeIndexTable);
 	ListInfo();
+	NTSTATUS ListTypeObjectTypeCallbacks(POBJECT_TYPE* ObpTypeObjectType);
+
 private:
 	ObjectTypeInfo m_ObjectTypeMap[MAX_TYPE_OBJECT_TYPE_DEPTH];
 	POBJECT_TYPE m_ObpTypeObjectType = nullptr;
