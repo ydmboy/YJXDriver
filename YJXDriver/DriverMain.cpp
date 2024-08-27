@@ -5,17 +5,17 @@
 extern "C"
 void DriverUnload(PDRIVER_OBJECT DriverObject)
 {
-    UNICODE_STRING SymbolicLinkName = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
-    IoDeleteSymbolicLink(&SymbolicLinkName);
-	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
-	IoDeleteSymbolicLink(&smLinkCode);
-	PDEVICE_OBJECT pdObj = DriverObject->DeviceObject;
-	UnistallAllProcessType();
-	if (pdObj)
-	{
-		IoDeleteDevice(DriverObject->DeviceObject);
-		pdObj->NextDevice;
-	}
+ //   UNICODE_STRING SymbolicLinkName = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
+ //   IoDeleteSymbolicLink(&SymbolicLinkName);
+	//UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
+	//IoDeleteSymbolicLink(&smLinkCode);
+	//PDEVICE_OBJECT pdObj = DriverObject->DeviceObject;
+	//UnistallAllProcessType();
+	//if (pdObj)
+	//{
+	//	IoDeleteDevice(DriverObject->DeviceObject);
+	//	pdObj->NextDevice;
+	//}
 }
 
 extern "C"
@@ -93,6 +93,27 @@ CLEANUP:
 //extern "C"
 //NTSTATUS  DeleteDevice()
 
+extern "C"
+NTSTATUS DisengageDrv(_In_ PDRIVER_OBJECT pdo,UNICODE_STRING& httpName)
+{
+	NTSTATUS status = STATUS_SUCCESS;
+	PKLDR_DATA_TABLE_ENTRY selfNode = (PKLDR_DATA_TABLE_ENTRY)pdo->DriverSection;
+	PKLDR_DATA_TABLE_ENTRY preNode = selfNode;
+
+	do {
+		DbgPrint("%wZ\r\n",&preNode->BaseDllName);
+		//if (preNode->BaseDllName.Length != 0 && RtlCompareUnicodeString(&preNode->BaseDllName, &httpName, TRUE))
+		//{
+		//	DbgPrint("%wZ\r\n",&preNode->BaseDllName);
+		//	RemoveEntryList((PLIST_ENTRY)preNode);
+		//	break;
+		//}
+		preNode = (PKLDR_DATA_TABLE_ENTRY)preNode->InLoadOrderLinks.Flink;
+	} while (preNode != selfNode);
+	return status;
+
+	
+}
 
 extern "C"
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING RegistryPath)
@@ -101,19 +122,25 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
 	DriverObject->DriverUnload = DriverUnload;
-	DbgPrint("DriverEntry\n");
-	UNICODE_STRING deviceStr = { 0 };
-	UNICODE_STRING symblicStr = { 0 };
-	PDEVICE_OBJECT deviceObj = NULL;
-	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
-    RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
-	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
-	setMemoryProtect();
-	ListProcessTypeCallbacks();
+	UNICODE_STRING unicode = { 0 };
+	DisengageDrv(DriverObject,unicode);
 
-	ListInfo li;
-	//li.PrintObjectTypeInfo();
-	li.PrintObTypeIndexList(li.GetObTypeIndexTable());
+
+	//DbgPrint("DriverEntry\n");
+	//UNICODE_STRING deviceStr = { 0 };
+	//UNICODE_STRING symblicStr = { 0 };
+	//PDEVICE_OBJECT deviceObj = NULL;
+	//RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
+ //   RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
+
+
+	//CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
+	//setMemoryProtect();
+	//ListProcessTypeCallbacks();
+
+	//ListInfo li;
+	////li.PrintObjectTypeInfo();
+	//li.PrintObTypeIndexList(li.GetObTypeIndexTable());
 
 	return STATUS_SUCCESS;
 }
