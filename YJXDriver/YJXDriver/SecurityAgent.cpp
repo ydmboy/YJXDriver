@@ -16,9 +16,9 @@ NTSTATUS ListProcessTypeCallbacks()
         if (entry)
         {
             // 处理或打印回调信息
-            DbgPrint("Callback found: %ws,Address:%p\n", entry->AltitudeString,entry);
+            DbgPrint("Callback found: %ws,Address:%p", entry->AltitudeString,entry);
 			DbgPrint("gsHande:%p",gs_handleCallback);
-			DbgPrint("Func:%p",my_pre_callback);
+			DbgPrint("Func:%p\n",my_pre_callback);
         }
 
         current = current->Flink;

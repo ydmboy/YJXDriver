@@ -213,15 +213,57 @@ NTSTATUS ListInfo::ListTypeObjectTypeCallbacks(POBJECT_TYPE* ObpTypeObjectType)
     while (current != head)
     {
         CALLBACK_ENTRY_ITEM* item = (CALLBACK_ENTRY_ITEM*)current;
-        CALLBACK_ENTRY* entry = item->CallbackEntry;
 
-        if (entry)
-        {
-            // 处理或打印回调信息
-            DbgPrint("Callback found: %ws,Address:%p\n", entry->AltitudeString,entry);
-			//DbgPrint("gsHande:%p",gs_handleCallback);
-			//DbgPrint("Func:%p",my_pre_callback);
-        }
+        //CALLBACK_ENTRY* entry = item->CallbackEntry;
+
+		/*
+		Operations: 0x1
+		CallbackEntry: FFFFC8056B611520  (gs_handleCallback)
+		ObjectType: 0xFFFFDA0E916AC360	 (ObjectType-addr)
+		PreOperation: FFFFF803A0CF3700   (当前函数地址)
+		PostOperation: 0000000000000000
+		Unknown Value (unk): 0	
+		*/
+
+
+		if (item == NULL) {
+			DbgPrint("Item is NULL.\n");
+			return STATUS_SUCCESS;
+		}
+		DbgPrint("Callback Entry Item Address: %p\n", item);
+
+		// 打印 LIST_ENTRY 结构
+		DbgPrint("EntryItemList.Flink: %p\n", item->EntryItemList.Flink);
+		DbgPrint("EntryItemList.Blink: %p\n", item->EntryItemList.Blink);
+
+		// 打印 OB_OPERATION 枚举
+		DbgPrint("Operations: 0x%x\n", item->Operations);
+
+		// 打印 CallbackEntry 指针
+		DbgPrint("CallbackEntry: %p\n", item->CallbackEntry);
+
+		// 打印 POBJECT_TYPE 指针
+		DbgPrint("ObjectType: %p\n", item->ObjectType);
+
+		// 打印 PreOperation 和 PostOperation 函数指针
+		DbgPrint("PreOperation: %p\n", item->PreOperation);
+		DbgPrint("PostOperation: %p\n", item->PostOperation);
+
+		// 打印 unk 值
+		DbgPrint("Unknown Value (unk): %lld\n", item->unk);
+
+
+
+
+
+   //     if (entry)
+   //     {
+   //         // 处理或打印回调信息
+   //         DbgPrint("Callback found: %ws,Address:%p\n", entry->AltitudeString,entry);
+
+			////DbgPrint("gsHande:%p",gs_handleCallback);
+			////DbgPrint("Func:%p",my_pre_callback);
+   //     }
 
         current = current->Flink;
     }

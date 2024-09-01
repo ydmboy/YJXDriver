@@ -171,6 +171,7 @@
     <ClInclude Include="ListInfo.h" />
     <ClInclude Include="MacroUtils.h" />
     <ClInclude Include="SecurityAgent.h" />
+    <ClInclude Include="UserKernleComm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
