@@ -298,11 +298,13 @@ extern "C" NTSTATUS GetProcessImagePath(
 
     // 分配内存以存储文件路径信息
     buffer = ExAllocatePoolWithTag(PagedPool, 512, 'tag'); // 假设路径不超过 512 字节
-    if (!buffer) {
-        DbgPrint("GetProcessImagePath: ExAllocatePoolWithTag failed\n");
-        NtClose(processHandle);
-        return STATUS_INSUFFICIENT_RESOURCES;
-    }
+	if (!buffer) {
+		DbgPrint("GetProcessImagePath: ExAllocatePoolWithTag failed\n");
+		NtClose(processHandle);
+		return STATUS_INSUFFICIENT_RESOURCES;
+	}
+	else
+		RtlZeroMemory(buffer, 512);
 
     // 获取进程映像文件路径
     status = NtQueryInformationProcess(
@@ -314,17 +316,20 @@ extern "C" NTSTATUS GetProcessImagePath(
     );
 
     if (NT_SUCCESS(status)) {
-        UNICODE_STRING imageName;
-        imageName.Length = (USHORT)returnedLength;
-        imageName.MaximumLength = (USHORT)returnedLength;
-        imageName.Buffer = (PWSTR)buffer;
-        RtlCopyUnicodeString(FilePath, &imageName);
+
+		FilePath->Length = (USHORT)returnedLength;
+		FilePath->MaximumLength = (USHORT)returnedLength;
+		FilePath->Buffer = (PWSTR)ExAllocatePoolWithTag(PagedPool,512,'tag');
+	
+		RtlCopyUnicodeString(FilePath, (PUNICODE_STRING)buffer);
+
     } else {
         DbgPrint("GetProcessImagePath: ZwQueryInformationProcess failed with status 0x%X\n", status);
+		//ExFreePoolWithTag(buffer, 'tag');
     }
 
     // 释放资源
-    //ExFreePoolWithTag(buffer, 'tag');
+    ExFreePoolWithTag(buffer, 'tag');
     NtClose(processHandle);
 
     return status;
@@ -369,7 +374,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 
 	PrintSystemProcessInformation((PSYSTEM_PROCESS_INFORMATION)processInfoBuffer, processInfoLength);
 
-	UNICODE_STRING filePath;
+	UNICODE_STRING filePath = { 0 };
 	SYSTEM_PROCESS_INFORMATION spi = { 0 };
 	spi = *(PSYSTEM_PROCESS_INFORMATION)processInfoBuffer;
 	
@@ -393,7 +398,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 		if (filePath.Buffer)
 		{
 			ExFreePoolWithTag(filePath.Buffer, 'tag');
-					//filePath.Buffer = NULL;
+			filePath.Buffer = NULL;
 		}
 		if (currentProcess->NextEntryOffset == 0)
 			break;
