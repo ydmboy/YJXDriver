@@ -13,6 +13,7 @@
 #ifndef COMMONHEADER 
 #define COMMONHEADER
 
+#include <ntifs.h>
 #include <ntddk.h>
 #include <wdm.h>
 #include "MacroUtils.h"

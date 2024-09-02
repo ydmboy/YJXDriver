@@ -6,6 +6,20 @@
 
 #define EXPORT_FUNC_H
 
-extern "C"  PCHAR PsGetProcessImageFileName(IN PEPROCESS pProcess);
+
+extern "C"
+{
+	NTSYSAPI PCHAR PsGetProcessImageFileName(IN PEPROCESS pProcess);
+
+	NTSYSAPI
+	NTSTATUS
+	NTAPI
+	ZwQuerySystemInformation(
+		IN SYSTEM_INFORMATION_CLASS SystemInformationClass,
+		OUT PVOID SystemInformation,
+		IN ULONG SystemInformationLength,
+		OUT PULONG ReturnLength OPTIONAL 
+		);
+}
 
 #endif
