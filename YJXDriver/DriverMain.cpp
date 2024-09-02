@@ -197,7 +197,8 @@ VOID PrintSystemProcessInformation(PSYSTEM_PROCESS_INFORMATION ProcessInfo, ULON
 }
 
 
-
+// funcName: GetFilePathFromProcessId
+// unavailable  
 extern "C" NTSTATUS GetFilePathFromProcessId(
 	IN HANDLE ProcessId,
 	OUT PUNICODE_STRING FilePath
@@ -253,7 +254,8 @@ extern "C" NTSTATUS GetFilePathFromProcessId(
 	}
 
 	// 查询文件名
-	status = IoQueryFileDosDeviceName(fileObject, (POBJECT_NAME_INFORMATION*)buffer);
+	CHECK_STATUS(status, IoQueryFileDosDeviceName(fileObject, (POBJECT_NAME_INFORMATION*)buffer));
+	//status = IoQueryFileDosDeviceName(fileObject, (POBJECT_NAME_INFORMATION*)buffer);
 	if (NT_SUCCESS(status)) {
 		RtlCopyUnicodeString(FilePath, (PUNICODE_STRING)buffer);
 	}
@@ -262,6 +264,7 @@ extern "C" NTSTATUS GetFilePathFromProcessId(
 	}
 
 	// 释放资源
+CLEANUP:
 	ExFreePoolWithTag(buffer, 'tag');
 	ObDereferenceObject(fileObject);
 	NtClose(processHandle);
@@ -269,7 +272,63 @@ extern "C" NTSTATUS GetFilePathFromProcessId(
 	return status;
 }
 
+extern "C" NTSTATUS GetProcessImagePath(
+    IN HANDLE ProcessId,
+    OUT PUNICODE_STRING FilePath
+)
+{
+    NTSTATUS status;
+    HANDLE processHandle;
+    OBJECT_ATTRIBUTES objectAttributes;
+    CLIENT_ID clientId;
+    ULONG returnedLength;
+    PVOID buffer;
 
+    // 初始化 CLIENT_ID 和 OBJECT_ATTRIBUTES
+    InitializeObjectAttributes(&objectAttributes, NULL, 0, NULL, NULL);
+    clientId.UniqueProcess = ProcessId;
+    clientId.UniqueThread = NULL;
+
+    // 打开进程句柄
+    status = NtOpenProcess(&processHandle, PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, &objectAttributes, &clientId);
+    if (!NT_SUCCESS(status)) {
+        DbgPrint("GetProcessImagePath: NtOpenProcess failed with status 0x%X\n", status);
+        return status;
+    }
+
+    // 分配内存以存储文件路径信息
+    buffer = ExAllocatePoolWithTag(PagedPool, 512, 'tag'); // 假设路径不超过 512 字节
+    if (!buffer) {
+        DbgPrint("GetProcessImagePath: ExAllocatePoolWithTag failed\n");
+        NtClose(processHandle);
+        return STATUS_INSUFFICIENT_RESOURCES;
+    }
+
+    // 获取进程映像文件路径
+    status = NtQueryInformationProcess(
+        processHandle,
+        ProcessImageFileName, // 获取映像文件名
+        buffer,
+        512,
+        &returnedLength
+    );
+
+    if (NT_SUCCESS(status)) {
+        UNICODE_STRING imageName;
+        imageName.Length = (USHORT)returnedLength;
+        imageName.MaximumLength = (USHORT)returnedLength;
+        imageName.Buffer = (PWSTR)buffer;
+        RtlCopyUnicodeString(FilePath, &imageName);
+    } else {
+        DbgPrint("GetProcessImagePath: ZwQueryInformationProcess failed with status 0x%X\n", status);
+    }
+
+    // 释放资源
+    //ExFreePoolWithTag(buffer, 'tag');
+    NtClose(processHandle);
+
+    return status;
+}
 
 
 
@@ -321,7 +380,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 
 		if (currentProcess->UniqueProcessId)
 		{	
-			if (NT_SUCCESS(GetFilePathFromProcessId(((PSYSTEM_PROCESS_INFORMATION)currentProcess)->UniqueProcessId,&filePath)))
+			if (NT_SUCCESS(GetProcessImagePath(((PSYSTEM_PROCESS_INFORMATION)currentProcess)->UniqueProcessId,&filePath)))
 			{
 				DbgPrint("ProcessPath: %wZ\n",filePath);
 			}
@@ -331,11 +390,20 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 			}
 		}
 
+		if (filePath.Buffer)
+		{
+			ExFreePoolWithTag(filePath.Buffer, 'tag');
+					//filePath.Buffer = NULL;
+		}
 		if (currentProcess->NextEntryOffset == 0)
 			break;
 		offset += currentProcess->NextEntryOffset;
 	}
 
+
+CLEANUP:
+	if (processInfoBuffer)
+		ExFreePool(processInfoBuffer);
 
 
 	return STATUS_SUCCESS;
