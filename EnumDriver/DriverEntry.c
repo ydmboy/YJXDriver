@@ -17,25 +17,29 @@ typedef struct _SYSTEM_THREADS
 	KWAIT_REASON            WaitReason;
 }SYSTEM_THREADS, *PSYSTEM_THREADS;
 
+
+
+
 //进程信息结构体  
 typedef struct _SYSTEM_PROCESSES
 {
-	ULONG                           NextEntryDelta;    //链表下一个结构和上一个结构的偏移
-	ULONG                           ThreadCount;
-	ULONG                           Reserved[6];
-	LARGE_INTEGER                   CreateTime;
-	LARGE_INTEGER                   UserTime;
-	LARGE_INTEGER                   KernelTime;
-	UNICODE_STRING                  ProcessName;     //进程名字
-	KPRIORITY                       BasePriority;
-	ULONG                           ProcessId;      //进程的pid号
-	ULONG                           InheritedFromProcessId;
-	ULONG                           HandleCount;
-	ULONG                           Reserved2[2];
-	VM_COUNTERS                     VmCounters;
-	IO_COUNTERS                     IoCounters; //windows 2000 only  
-	struct _SYSTEM_THREADS          Threads[1];
+    ULONG                           NextEntryDelta;    //链表下一个结构和上一个结构的偏移
+    ULONG                           ThreadCount;
+    ULONG                           Reserved[6];
+    LARGE_INTEGER                   CreateTime;
+    LARGE_INTEGER                   UserTime;
+    LARGE_INTEGER                   KernelTime;
+    UNICODE_STRING                  ProcessName;     //进程名字
+    KPRIORITY                       BasePriority;
+    ULONG                           ProcessId;      //进程的pid号
+    ULONG                           InheritedFromProcessId;
+    ULONG                           HandleCount;
+    ULONG                           Reserved2[2];
+    VM_COUNTERS                     VmCounters;
+    IO_COUNTERS                     IoCounters; //windows 2000 only  
+    struct _SYSTEM_THREADS          Threads[1];
 }SYSTEM_PROCESSES, *PSYSTEM_PROCESSES;
+
 
 //声明ZqQueryAyatemInformation
 NTSTATUS ZwQuerySystemInformation(

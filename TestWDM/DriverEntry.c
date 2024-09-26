@@ -151,40 +151,166 @@ void TraverseDriversAndPrintInfo()
     }
 }
 
-//typedef struct _SYSTEM_PROCESS_INFORMATION {
-//    ULONG NextEntryOffset;                    // 下一个进程信息的偏移量
-//    ULONG NumberOfThreads;                    // 线程数量
-//    LARGE_INTEGER Reserved[3];                // 保留字段
-//    LARGE_INTEGER CreateTime;                 // 进程创建时间
-//    LARGE_INTEGER UserTime;                   // 用户模式下的时间
-//    LARGE_INTEGER KernelTime;                 // 内核模式下的时间
-//    UNICODE_STRING ImageName;                 // 进程的名称
-//    ULONG BasePriority;                       // 进程的优先级
-//    HANDLE UniqueProcessId;                   // 进程 ID (PID)
-//    PVOID InheritedFromUniqueProcessId;       // 父进程 ID
-//    ULONG HandleCount;                        // 句柄计数
-//    ULONG SessionId;                          // 会话 ID
-//    ULONG_PTR PageDirectoryBase;              // 页面目录基址
-//    SIZE_T PeakVirtualSize;                   // 虚拟内存的峰值
-//    SIZE_T VirtualSize;                       // 当前虚拟内存大小
-//    ULONG PageFaultCount;                     // 页面错误计数
-//    SIZE_T PeakWorkingSetSize;                // 工作集峰值大小
-//    SIZE_T WorkingSetSize;                    // 当前工作集大小
-//    SIZE_T QuotaPeakPagedPoolUsage;           // 分页池配额峰值
-//    SIZE_T QuotaPagedPoolUsage;               // 当前分页池配额
-//    SIZE_T QuotaPeakNonPagedPoolUsage;        // 非分页池配额峰值
-//    SIZE_T QuotaNonPagedPoolUsage;            // 当前非分页池配额
-//    SIZE_T PagefileUsage;                     // 页面文件使用量
-//    SIZE_T PeakPagefileUsage;                 // 页面文件使用量峰值
-//    SIZE_T PrivatePageCount;                  // 私有页数量
-//    LARGE_INTEGER ReadOperationCount;         // 读取操作计数
-//    LARGE_INTEGER WriteOperationCount;        // 写入操作计数
-//    LARGE_INTEGER OtherOperationCount;        // 其他操作计数
-//    LARGE_INTEGER ReadTransferCount;          // 读取传输字节数
-//    LARGE_INTEGER WriteTransferCount;         // 写入传输字节数
-//    LARGE_INTEGER OtherTransferCount;         // 其他传输字节数
-//    // 后续还可能包含更多线程的信息，省略其结构体
-//} SYSTEM_PROCESS_INFORMATION, *PSYSTEM_PROCESS_INFORMATION;
+typedef enum _SYSTEM_INFORMATION_CLASS
+{
+	SystemBasicInformation = 0x0,
+	SystemProcessorInformation = 0x1,
+	SystemPerformanceInformation = 0x2,
+	SystemTimeOfDayInformation = 0x3,
+	SystemPathInformation = 0x4,
+	SystemProcessInformation = 0x5,
+	SystemCallCountInformation = 0x6,
+	SystemDeviceInformation = 0x7,
+	SystemProcessorPerformanceInformation = 0x8,
+	SystemFlagsInformation = 0x9,
+	SystemCallTimeInformation = 0xa,
+	SystemModuleInformation = 0xb,
+	SystemLocksInformation = 0xc,
+	SystemStackTraceInformation = 0xd,
+	SystemPagedPoolInformation = 0xe,
+	SystemNonPagedPoolInformation = 0xf,
+	SystemHandleInformation = 0x10,
+	SystemObjectInformation = 0x11,
+	SystemPageFileInformation = 0x12,
+	SystemVdmInstemulInformation = 0x13,
+	SystemVdmBopInformation = 0x14,
+	SystemFileCacheInformation = 0x15,
+	SystemPoolTagInformation = 0x16,
+	SystemInterruptInformation = 0x17,
+	SystemDpcBehaviorInformation = 0x18,
+	SystemFullMemoryInformation = 0x19,
+	SystemLoadGdiDriverInformation = 0x1a,
+	SystemUnloadGdiDriverInformation = 0x1b,
+	SystemTimeAdjustmentInformation = 0x1c,
+	SystemSummaryMemoryInformation = 0x1d,
+	SystemMirrorMemoryInformation = 0x1e,
+	SystemPerformanceTraceInformation = 0x1f,
+	SystemObsolete0 = 0x20,
+	SystemExceptionInformation = 0x21,
+	SystemCrashDumpStateInformation = 0x22,
+	SystemKernelDebuggerInformation = 0x23,
+	SystemContextSwitchInformation = 0x24,
+	SystemRegistryQuotaInformation = 0x25,
+	SystemExtendServiceTableInformation = 0x26,
+	SystemPrioritySeperation = 0x27,
+	SystemVerifierAddDriverInformation = 0x28,
+	SystemVerifierRemoveDriverInformation = 0x29,
+	SystemProcessorIdleInformation = 0x2a,
+	SystemLegacyDriverInformation = 0x2b,
+	SystemCurrentTimeZoneInformation = 0x2c,
+	SystemLookasideInformation = 0x2d,
+	SystemTimeSlipNotification = 0x2e,
+	SystemSessionCreate = 0x2f,
+	SystemSessionDetach = 0x30,
+	SystemSessionInformation = 0x31,
+	SystemRangeStartInformation = 0x32,
+	SystemVerifierInformation = 0x33,
+	SystemVerifierThunkExtend = 0x34,
+	SystemSessionProcessInformation = 0x35,
+	SystemLoadGdiDriverInSystemSpace = 0x36,
+	SystemNumaProcessorMap = 0x37,
+	SystemPrefetcherInformation = 0x38,
+	SystemExtendedProcessInformation = 0x39,
+	SystemRecommendedSharedDataAlignment = 0x3a,
+	SystemComPlusPackage = 0x3b,
+	SystemNumaAvailableMemory = 0x3c,
+	SystemProcessorPowerInformation = 0x3d,
+	SystemEmulationBasicInformation = 0x3e,
+	SystemEmulationProcessorInformation = 0x3f,
+	SystemExtendedHandleInformation = 0x40,
+	SystemLostDelayedWriteInformation = 0x41,
+	SystemBigPoolInformation = 0x42,
+	SystemSessionPoolTagInformation = 0x43,
+	SystemSessionMappedViewInformation = 0x44,
+	SystemHotpatchInformation = 0x45,
+	SystemObjectSecurityMode = 0x46,
+	SystemWatchdogTimerHandler = 0x47,
+	SystemWatchdogTimerInformation = 0x48,
+	SystemLogicalProcessorInformation = 0x49,
+	SystemWow64SharedInformationObsolete = 0x4a,
+	SystemRegisterFirmwareTableInformationHandler = 0x4b,
+	SystemFirmwareTableInformation = 0x4c,
+	SystemModuleInformationEx = 0x4d,
+	SystemVerifierTriageInformation = 0x4e,
+	SystemSuperfetchInformation = 0x4f,
+	SystemMemoryListInformation = 0x50,
+	SystemFileCacheInformationEx = 0x51,
+	SystemThreadPriorityClientIdInformation = 0x52,
+	SystemProcessorIdleCycleTimeInformation = 0x53,
+	SystemVerifierCancellationInformation = 0x54,
+	SystemProcessorPowerInformationEx = 0x55,
+	SystemRefTraceInformation = 0x56,
+	SystemSpecialPoolInformation = 0x57,
+	SystemProcessIdInformation = 0x58,
+	SystemErrorPortInformation = 0x59,
+	SystemBootEnvironmentInformation = 0x5a,
+	SystemHypervisorInformation = 0x5b,
+	SystemVerifierInformationEx = 0x5c,
+	SystemTimeZoneInformation = 0x5d,
+	SystemImageFileExecutionOptionsInformation = 0x5e,
+	SystemCoverageInformation = 0x5f,
+	SystemPrefetchPatchInformation = 0x60,
+	SystemVerifierFaultsInformation = 0x61,
+	SystemSystemPartitionInformation = 0x62,
+	SystemSystemDiskInformation = 0x63,
+	SystemProcessorPerformanceDistribution = 0x64,
+	SystemNumaProximityNodeInformation = 0x65,
+	SystemDynamicTimeZoneInformation = 0x66,
+	SystemCodeIntegrityInformation = 0x67,
+	SystemProcessorMicrocodeUpdateInformation = 0x68,
+	SystemProcessorBrandString = 0x69,
+	SystemVirtualAddressInformation = 0x6a,
+	SystemLogicalProcessorAndGroupInformation = 0x6b,
+	SystemProcessorCycleTimeInformation = 0x6c,
+	SystemStoreInformation = 0x6d,
+	SystemRegistryAppendString = 0x6e,
+	SystemAitSamplingValue = 0x6f,
+	SystemVhdBootInformation = 0x70,
+	SystemCpuQuotaInformation = 0x71,
+	SystemNativeBasicInformation = 0x72,
+	SystemErrorPortTimeouts = 0x73,
+	SystemLowPriorityIoInformation = 0x74,
+	SystemBootEntropyInformation = 0x75,
+	SystemVerifierCountersInformation = 0x76,
+	SystemPagedPoolInformationEx = 0x77,
+	SystemSystemPtesInformationEx = 0x78,
+	SystemNodeDistanceInformation = 0x79,
+	SystemAcpiAuditInformation = 0x7a,
+	SystemBasicPerformanceInformation = 0x7b,
+	SystemQueryPerformanceCounterInformation = 0x7c,
+	SystemSessionBigPoolInformation = 0x7d,
+	SystemBootGraphicsInformation = 0x7e,
+	SystemScrubPhysicalMemoryInformation = 0x7f,
+	SystemBadPageInformation = 0x80,
+	SystemProcessorProfileControlArea = 0x81,
+	SystemCombinePhysicalMemoryInformation = 0x82,
+	SystemEntropyInterruptTimingInformation = 0x83,
+	SystemConsoleInformation = 0x84,
+	SystemPlatformBinaryInformation = 0x85,
+	SystemThrottleNotificationInformation = 0x86,
+	SystemHypervisorProcessorCountInformation = 0x87,
+	SystemDeviceDataInformation = 0x88,
+	SystemDeviceDataEnumerationInformation = 0x89,
+	SystemMemoryTopologyInformation = 0x8a,
+	SystemMemoryChannelInformation = 0x8b,
+	SystemBootLogoInformation = 0x8c,
+	SystemProcessorPerformanceInformationEx = 0x8d,
+	SystemSpare0 = 0x8e,
+	SystemSecureBootPolicyInformation = 0x8f,
+	SystemPageFileInformationEx = 0x90,
+	SystemSecureBootInformation = 0x91,
+	SystemEntropyInterruptTimingRawInformation = 0x92,
+	SystemPortableWorkspaceEfiLauncherInformation = 0x93,
+	SystemFullProcessInformation = 0x94,
+	SystemKernelDebuggerInformationEx = 0x95,
+	SystemBootMetadataInformation = 0x96,
+	SystemSoftRebootInformation = 0x97,
+	SystemElamCertificateInformation = 0x98,
+	SystemOfflineDumpConfigInformation = 0x99,
+	SystemProcessorFeaturesInformation = 0x9a,
+	SystemRegistryReconciliationInformation = 0x9b,
+	MaxSystemInfoClass = 0x9c,
+} SYSTEM_INFORMATION_CLASS;
 
 typedef struct _SYSTEM_THREAD_INFORMATION
 {
@@ -201,206 +327,122 @@ typedef struct _SYSTEM_THREAD_INFORMATION
 	KWAIT_REASON WaitReason;
 }SYSTEM_THREAD_INFORMATION, *PSYSTEM_THREAD_INFORMATION;
 
-typedef struct _SYSTEM_PROCESS_INFO
-{
-    ULONG NextEntryOffset;
-    ULONG NumberOfThreads;
-    LARGE_INTEGER WorkingSetPrivateSize;
-    ULONG HardFaultCount;
-    ULONG NumberOfThreadsHighWatermark;
-    ULONGLONG CycleTime;
-    LARGE_INTEGER CreateTime;
-    LARGE_INTEGER UserTime;
-    LARGE_INTEGER KernelTime;
-    UNICODE_STRING ImageName;
-    KPRIORITY BasePriority;
-    HANDLE UniqueProcessId;
-    HANDLE InheritedFromUniqueProcessId;
-    ULONG HandleCount;
-    ULONG SessionId;
-    ULONG_PTR UniqueProcessKey;
-    SIZE_T PeakVirtualSize;
-    SIZE_T VirtualSize;
-    ULONG PageFaultCount;
-    SIZE_T PeakWorkingSetSize;
-    SIZE_T WorkingSetSize;
-    SIZE_T QuotaPeakPagedPoolUsage;
-    SIZE_T QuotaPagedPoolUsage;
-    SIZE_T QuotaPeakNonPagedPoolUsage;
-    SIZE_T QuotaNonPagedPoolUsage;
-    SIZE_T PagefileUsage;
-    SIZE_T PeakPagefileUsage;
-    SIZE_T PrivatePageCount;
-    LARGE_INTEGER ReadOperationCount;
-    LARGE_INTEGER WriteOperationCount;
-    LARGE_INTEGER OtherOperationCount;
-    LARGE_INTEGER ReadTransferCount;
-    LARGE_INTEGER WriteTransferCount;
-    LARGE_INTEGER OtherTransferCount;
-    SYSTEM_THREAD_INFORMATION Threads[1];
-}SYSTEM_PROCESS_INFO, *PSYSTEM_PROCESS_INFO;
+//typedef struct _SYSTEM_PROCESS_INFO
+//{
+//    ULONG NextEntryOffset;
+//    ULONG NumberOfThreads;
+//    LARGE_INTEGER WorkingSetPrivateSize;
+//    ULONG HardFaultCount;
+//    ULONG NumberOfThreadsHighWatermark;
+//    ULONGLONG CycleTime;
+//    LARGE_INTEGER CreateTime;
+//    LARGE_INTEGER UserTime;
+//    LARGE_INTEGER KernelTime;
+//    UNICODE_STRING ImageName;
+//    KPRIORITY BasePriority;
+//    HANDLE UniqueProcessId;
+//    HANDLE InheritedFromUniqueProcessId;
+//    ULONG HandleCount;
+//    ULONG SessionId;
+//    ULONG_PTR UniqueProcessKey;
+//    SIZE_T PeakVirtualSize;
+//    SIZE_T VirtualSize;
+//    ULONG PageFaultCount;
+//    SIZE_T PeakWorkingSetSize;
+//    SIZE_T WorkingSetSize;
+//    SIZE_T QuotaPeakPagedPoolUsage;
+//    SIZE_T QuotaPagedPoolUsage;
+//    SIZE_T QuotaPeakNonPagedPoolUsage;
+//    SIZE_T QuotaNonPagedPoolUsage;
+//    SIZE_T PagefileUsage;
+//    SIZE_T PeakPagefileUsage;
+//    SIZE_T PrivatePageCount;
+//    LARGE_INTEGER ReadOperationCount;
+//    LARGE_INTEGER WriteOperationCount;
+//    LARGE_INTEGER OtherOperationCount;
+//    LARGE_INTEGER ReadTransferCount;
+//    LARGE_INTEGER WriteTransferCount;
+//    LARGE_INTEGER OtherTransferCount;
+//    SYSTEM_THREAD_INFORMATION Threads[1];
+//}SYSTEM_PROCESS_INFO, *PSYSTEM_PROCESS_INFO;
 
 
-typedef enum _SYSTEM_INFORMATION_CLASS
+typedef struct _SYSTEM_THREADS
 {
-    SystemBasicInformation = 0x0,
-    SystemProcessorInformation = 0x1,
-    SystemPerformanceInformation = 0x2,
-    SystemTimeOfDayInformation = 0x3,
-    SystemPathInformation = 0x4,
-    SystemProcessInformation = 0x5,
-    SystemCallCountInformation = 0x6,
-    SystemDeviceInformation = 0x7,
-    SystemProcessorPerformanceInformation = 0x8,
-    SystemFlagsInformation = 0x9,
-    SystemCallTimeInformation = 0xa,
-    SystemModuleInformation = 0xb,
-    SystemLocksInformation = 0xc,
-    SystemStackTraceInformation = 0xd,
-    SystemPagedPoolInformation = 0xe,
-    SystemNonPagedPoolInformation = 0xf,
-    SystemHandleInformation = 0x10,
-    SystemObjectInformation = 0x11,
-    SystemPageFileInformation = 0x12,
-    SystemVdmInstemulInformation = 0x13,
-    SystemVdmBopInformation = 0x14,
-    SystemFileCacheInformation = 0x15,
-    SystemPoolTagInformation = 0x16,
-    SystemInterruptInformation = 0x17,
-    SystemDpcBehaviorInformation = 0x18,
-    SystemFullMemoryInformation = 0x19,
-    SystemLoadGdiDriverInformation = 0x1a,
-    SystemUnloadGdiDriverInformation = 0x1b,
-    SystemTimeAdjustmentInformation = 0x1c,
-    SystemSummaryMemoryInformation = 0x1d,
-    SystemMirrorMemoryInformation = 0x1e,
-    SystemPerformanceTraceInformation = 0x1f,
-    SystemObsolete0 = 0x20,
-    SystemExceptionInformation = 0x21,
-    SystemCrashDumpStateInformation = 0x22,
-    SystemKernelDebuggerInformation = 0x23,
-    SystemContextSwitchInformation = 0x24,
-    SystemRegistryQuotaInformation = 0x25,
-    SystemExtendServiceTableInformation = 0x26,
-    SystemPrioritySeperation = 0x27,
-    SystemVerifierAddDriverInformation = 0x28,
-    SystemVerifierRemoveDriverInformation = 0x29,
-    SystemProcessorIdleInformation = 0x2a,
-    SystemLegacyDriverInformation = 0x2b,
-    SystemCurrentTimeZoneInformation = 0x2c,
-    SystemLookasideInformation = 0x2d,
-    SystemTimeSlipNotification = 0x2e,
-    SystemSessionCreate = 0x2f,
-    SystemSessionDetach = 0x30,
-    SystemSessionInformation = 0x31,
-    SystemRangeStartInformation = 0x32,
-    SystemVerifierInformation = 0x33,
-    SystemVerifierThunkExtend = 0x34,
-    SystemSessionProcessInformation = 0x35,
-    SystemLoadGdiDriverInSystemSpace = 0x36,
-    SystemNumaProcessorMap = 0x37,
-    SystemPrefetcherInformation = 0x38,
-    SystemExtendedProcessInformation = 0x39,
-    SystemRecommendedSharedDataAlignment = 0x3a,
-    SystemComPlusPackage = 0x3b,
-    SystemNumaAvailableMemory = 0x3c,
-    SystemProcessorPowerInformation = 0x3d,
-    SystemEmulationBasicInformation = 0x3e,
-    SystemEmulationProcessorInformation = 0x3f,
-    SystemExtendedHandleInformation = 0x40,
-    SystemLostDelayedWriteInformation = 0x41,
-    SystemBigPoolInformation = 0x42,
-    SystemSessionPoolTagInformation = 0x43,
-    SystemSessionMappedViewInformation = 0x44,
-    SystemHotpatchInformation = 0x45,
-    SystemObjectSecurityMode = 0x46,
-    SystemWatchdogTimerHandler = 0x47,
-    SystemWatchdogTimerInformation = 0x48,
-    SystemLogicalProcessorInformation = 0x49,
-    SystemWow64SharedInformationObsolete = 0x4a,
-    SystemRegisterFirmwareTableInformationHandler = 0x4b,
-    SystemFirmwareTableInformation = 0x4c,
-    SystemModuleInformationEx = 0x4d,
-    SystemVerifierTriageInformation = 0x4e,
-    SystemSuperfetchInformation = 0x4f,
-    SystemMemoryListInformation = 0x50,
-    SystemFileCacheInformationEx = 0x51,
-    SystemThreadPriorityClientIdInformation = 0x52,
-    SystemProcessorIdleCycleTimeInformation = 0x53,
-    SystemVerifierCancellationInformation = 0x54,
-    SystemProcessorPowerInformationEx = 0x55,
-    SystemRefTraceInformation = 0x56,
-    SystemSpecialPoolInformation = 0x57,
-    SystemProcessIdInformation = 0x58,
-    SystemErrorPortInformation = 0x59,
-    SystemBootEnvironmentInformation = 0x5a,
-    SystemHypervisorInformation = 0x5b,
-    SystemVerifierInformationEx = 0x5c,
-    SystemTimeZoneInformation = 0x5d,
-    SystemImageFileExecutionOptionsInformation = 0x5e,
-    SystemCoverageInformation = 0x5f,
-    SystemPrefetchPatchInformation = 0x60,
-    SystemVerifierFaultsInformation = 0x61,
-    SystemSystemPartitionInformation = 0x62,
-    SystemSystemDiskInformation = 0x63,
-    SystemProcessorPerformanceDistribution = 0x64,
-    SystemNumaProximityNodeInformation = 0x65,
-    SystemDynamicTimeZoneInformation = 0x66,
-    SystemCodeIntegrityInformation = 0x67,
-    SystemProcessorMicrocodeUpdateInformation = 0x68,
-    SystemProcessorBrandString = 0x69,
-    SystemVirtualAddressInformation = 0x6a,
-    SystemLogicalProcessorAndGroupInformation = 0x6b,
-    SystemProcessorCycleTimeInformation = 0x6c,
-    SystemStoreInformation = 0x6d,
-    SystemRegistryAppendString = 0x6e,
-    SystemAitSamplingValue = 0x6f,
-    SystemVhdBootInformation = 0x70,
-    SystemCpuQuotaInformation = 0x71,
-    SystemNativeBasicInformation = 0x72,
-    SystemErrorPortTimeouts = 0x73,
-    SystemLowPriorityIoInformation = 0x74,
-    SystemBootEntropyInformation = 0x75,
-    SystemVerifierCountersInformation = 0x76,
-    SystemPagedPoolInformationEx = 0x77,
-    SystemSystemPtesInformationEx = 0x78,
-    SystemNodeDistanceInformation = 0x79,
-    SystemAcpiAuditInformation = 0x7a,
-    SystemBasicPerformanceInformation = 0x7b,
-    SystemQueryPerformanceCounterInformation = 0x7c,
-    SystemSessionBigPoolInformation = 0x7d,
-    SystemBootGraphicsInformation = 0x7e,
-    SystemScrubPhysicalMemoryInformation = 0x7f,
-    SystemBadPageInformation = 0x80,
-    SystemProcessorProfileControlArea = 0x81,
-    SystemCombinePhysicalMemoryInformation = 0x82,
-    SystemEntropyInterruptTimingInformation = 0x83,
-    SystemConsoleInformation = 0x84,
-    SystemPlatformBinaryInformation = 0x85,
-    SystemThrottleNotificationInformation = 0x86,
-    SystemHypervisorProcessorCountInformation = 0x87,
-    SystemDeviceDataInformation = 0x88,
-    SystemDeviceDataEnumerationInformation = 0x89,
-    SystemMemoryTopologyInformation = 0x8a,
-    SystemMemoryChannelInformation = 0x8b,
-    SystemBootLogoInformation = 0x8c,
-    SystemProcessorPerformanceInformationEx = 0x8d,
-    SystemSpare0 = 0x8e,
-    SystemSecureBootPolicyInformation = 0x8f,
-    SystemPageFileInformationEx = 0x90,
-    SystemSecureBootInformation = 0x91,
-    SystemEntropyInterruptTimingRawInformation = 0x92,
-    SystemPortableWorkspaceEfiLauncherInformation = 0x93,
-    SystemFullProcessInformation = 0x94,
-    SystemKernelDebuggerInformationEx = 0x95,
-    SystemBootMetadataInformation = 0x96,
-    SystemSoftRebootInformation = 0x97,
-    SystemElamCertificateInformation = 0x98,
-    SystemOfflineDumpConfigInformation = 0x99,
-    SystemProcessorFeaturesInformation = 0x9a,
-    SystemRegistryReconciliationInformation = 0x9b,
-    MaxSystemInfoClass = 0x9c,
-} SYSTEM_INFORMATION_CLASS;
+	LARGE_INTEGER           KernelTime;
+	LARGE_INTEGER           UserTime;
+	LARGE_INTEGER           CreateTime;
+	ULONG                   WaitTime;
+	PVOID                   StartAddress;
+	CLIENT_ID               ClientIs;
+	KPRIORITY               Priority;
+	KPRIORITY               BasePriority;
+	ULONG                   ContextSwitchCount;
+	ULONG                   ThreadState;
+	KWAIT_REASON            WaitReason;
+}SYSTEM_THREADS, *PSYSTEM_THREADS;
+
+
+
+
+//进程信息结构体  
+//typedef struct _SYSTEM_PROCESSES
+//{
+//    ULONG                           NextEntryDelta;    //链表下一个结构和上一个结构的偏移
+//    ULONG                           ThreadCount;
+//    ULONG                           Reserved[6];
+//    LARGE_INTEGER                   CreateTime;
+//    LARGE_INTEGER                   UserTime;
+//    LARGE_INTEGER                   KernelTime;
+//    UNICODE_STRING                  ProcessName;     //进程名字
+//    KPRIORITY                       BasePriority;
+//    ULONG                           ProcessId;      //进程的pid号
+//    ULONG                           InheritedFromProcessId;
+//    ULONG                           HandleCount;
+//    ULONG                           Reserved2[2];
+//    VM_COUNTERS                     VmCounters;
+//    IO_COUNTERS                     IoCounters; //windows 2000 only  
+//    struct _SYSTEM_THREADS          Threads[1];
+//}SYSTEM_PROCESSES, *PSYSTEM_PROCESSES;
+
+typedef struct _SYSTEM_PROCESSES
+{
+	ULONG NextEntryOffset;
+	ULONG NumberOfThreads;
+	LARGE_INTEGER WorkingSetPrivateSize;
+	ULONG HardFaultCount;
+	ULONG NumberOfThreadsHighWatermark;
+	ULONGLONG CycleTime;
+	LARGE_INTEGER CreateTime;
+	LARGE_INTEGER UserTime;
+	LARGE_INTEGER KernelTime;
+	UNICODE_STRING processName;
+	KPRIORITY BasePriority;
+	HANDLE UniqueProcessId;
+	HANDLE InheritedFromUniqueProcessId;
+	ULONG HandleCount;
+	ULONG SessionId;
+	ULONG_PTR UniqueProcessKey;
+	SIZE_T PeakVirtualSize;
+	SIZE_T VirtualSize;
+	ULONG PageFaultCount;
+	SIZE_T PeakWorkingSetSize;
+	SIZE_T WorkingSetSize;
+	SIZE_T QuotaPeakPagedPoolUsage;
+	SIZE_T QuotaPagedPoolUsage;
+	SIZE_T QuotaPeakNonPagedPoolUsage;
+	SIZE_T QuotaNonPagedPoolUsage;
+	SIZE_T PagefileUsage;
+	SIZE_T PeakPagefileUsage;
+	SIZE_T PrivatePageCount;
+	LARGE_INTEGER ReadOperationCount;
+	LARGE_INTEGER WriteOperationCount;
+	LARGE_INTEGER OtherOperationCount;
+	LARGE_INTEGER ReadTransferCount;
+	LARGE_INTEGER WriteTransferCount;
+	LARGE_INTEGER OtherTransferCount;
+	SYSTEM_THREAD_INFORMATION Threads[1];
+}SYSTEM_PROCESSES, *PSYSTEM_PROCESSES;
 
 NTSYSAPI
 NTSTATUS
@@ -420,7 +462,7 @@ NTSTATUS EnumerateProcesses()
     ULONG bufferSize = 128; // 初始缓冲区大小
     PVOID buffer = NULL;
     ULONG returnLength = 0;
-	SYSTEM_INFORMATION_CLASS SystemProcessInformation = { 0 };
+	//SYSTEM_INFORMATION_CLASS SystemProcessInformation = 5;
 	int x = 0;
 
     // 分配缓冲区并调用 ZwQuerySystemInformation
@@ -458,23 +500,24 @@ NTSTATUS EnumerateProcesses()
     // 解析进程信息
     if (NT_SUCCESS(status))
     {
-		PSYSTEM_PROCESS_INFO processInfo = (PSYSTEM_PROCESS_INFO)buffer;
+		PSYSTEM_PROCESSES processInfo = (PSYSTEM_PROCESSES)buffer;
 
         do
         {
-            if (processInfo->ImageName.Buffer)
+            if (processInfo->processName.Buffer)
             {
-                DbgPrint("进程名称: %ws (PID: %u)\n", &processInfo->ImageName.Buffer, (ULONG)(ULONG_PTR)processInfo->UniqueProcessId);
+                DbgPrint("进程名称:%-20ws  (PID: %d)\n", processInfo->processName.Buffer, (ULONG)(ULONG_PTR)processInfo->UniqueProcessId);
             }
             else
             {
-                DbgPrint("进程名称: (空) (PID: %u)\n", (ULONG)(ULONG_PTR)processInfo->UniqueProcessId);
+				DbgPrint("进程名称: (空) (PID: %u)\n", (ULONG)(ULONG_PTR)processInfo->UniqueProcessId);
+
             }
 
             if (processInfo->NextEntryOffset == 0)
                 break;
-			-
-            processInfo = (PSYSTEM_PROCESS_INFO)((PUCHAR)processInfo + processInf);
+			//processInfo->NextEntryOffset;
+            processInfo = (PSYSTEM_PROCESSES)((PUCHAR)processInfo +processInfo->NextEntryOffset);
         } while (TRUE);
     }
 
