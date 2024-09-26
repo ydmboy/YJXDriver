@@ -35,13 +35,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F19EF268-7866-49AF-B3F8-C2ACE6E8C13B}</ProjectGuid>
+    <ProjectGuid>{27578E01-87FB-42AE-BF43-B6961CE77A5B}</ProjectGuid>
     <TemplateGuid>{dd38f7fc-d7bd-488b-9242-7d8754cde80d}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
-    <RootNamespace>YJXDriver</RootNamespace>
+    <RootNamespace>TestWDM</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -117,7 +117,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <EnableInf2cat>false</EnableInf2cat>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
@@ -134,44 +133,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>false</TreatWarningAsError>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <WarningLevel>Level4</WarningLevel>
-      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
-    <Link>
-      <AdditionalOptions>/INTEGRITYCHECK %(AdditionalOptions)</AdditionalOptions>
-    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Inf Include="YJXDriver.inf" />
+    <Inf Include="TestWDM.inf" />
   </ItemGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppDriverComm.cpp" />
-    <ClCompile Include="DriverMain.cpp" />
-    <ClCompile Include="ExportFunc.cpp" />
-    <ClCompile Include="GlobalVariables.cpp" />
-    <ClCompile Include="ListInfo.cpp" />
-    <ClCompile Include="SecurityAgent.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AppDriverComm.h" />
-    <ClInclude Include="CommonHeader.h" />
-    <ClInclude Include="ExportFunc.h" />
-    <ClInclude Include="GlobalVariables.h" />
-    <ClInclude Include="ListInfo.h" />
-    <ClInclude Include="MacroUtils.h" />
-    <ClInclude Include="SecurityAgent.h" />
+    <ClCompile Include="DriverEntry.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

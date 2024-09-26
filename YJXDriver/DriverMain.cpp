@@ -213,6 +213,7 @@ extern "C" NTSTATUS GetFilePathFromProcessId(
 	HANDLE processHandle;
 	OBJECT_ATTRIBUTES objectAttributes;
 	CLIENT_ID clientId;
+	IO_STATUS_BLOCK IoStatusBlock = { 0 };
 
 	// 初始化 CLIENT_ID 和 OBJECT_ATTRIBUTES
 	InitializeObjectAttributes(&objectAttributes, NULL, 0, NULL, NULL);
@@ -220,9 +221,16 @@ extern "C" NTSTATUS GetFilePathFromProcessId(
 	clientId.UniqueThread = NULL;
 
 	// 打开进程句柄
-	status = NtOpenProcess(&processHandle, PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, &objectAttributes, &clientId);
-	if (!NT_SUCCESS(status)) {
-		DbgPrint("GetFilePathFromProcessId: NtOpenProcess failed with status 0x%X\n", status);
+	//status = NtOpenProcess(&processHandle, PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, &objectAttributes, &clientId);
+	//if (!NT_SUCCESS(status)) {
+	//	DbgPrint("GetFilePathFromProcessId: NtOpenProcess failed with status 0x%X\n", status);
+	//	return status;
+	//}
+
+	status = NtOpenFile(&processHandle, GENERIC_READ, &objectAttributes,&IoStatusBlock,FILE_SHARE_READ| FILE_SHARE_WRITE ,0);
+	if (!NT_SUCCESS(status))
+	{
+		DbgPrint("GetFilePathFromProcessId: NtOpenFile failed with status 0x%X\n", status);
 		return status;
 	}
 
@@ -236,6 +244,7 @@ extern "C" NTSTATUS GetFilePathFromProcessId(
 
 	// 获取设备对象
 	deviceObject = IoGetRelatedDeviceObject(fileObject);
+	DbgPrint("1.deviceObject:%llx", deviceObject);
 	if (!deviceObject) {
 		DbgPrint("GetFilePathFromProcessId: IoGetRelatedDeviceObject failed\n");
 		ObDereferenceObject(fileObject);
@@ -487,9 +496,9 @@ NTSTATUS GetDosPathByProcessId(IN ULONG pid,OUT PANSI_STRING pAnsiNtPath)
 		{
 			ExFreePoolWithTag(pBuffer, 'niBI');
 		}
-		DbgPrint("NtQueryInformationProcess-dosPath:%wZ",(PUNICODE_STRING)pBuffer);
 		return STATUS_UNSUCCESSFUL;
 	}
+	DbgPrint("NtQueryInformationProcess-dosPath:%wZ",(PUNICODE_STRING)pBuffer);
 	
 	//开始转化路径
 	InitializeObjectAttributes(&obj, (PUNICODE_STRING)pBuffer, OBJ_KERNEL_HANDLE, 0, 0);
@@ -541,6 +550,9 @@ NTSTATUS GetDosPathByProcessId(IN ULONG pid,OUT PANSI_STRING pAnsiNtPath)
 		return STATUS_UNSUCCESSFUL;
 		
 	}
+	
+	DbgPrint("2.deviceObject:%llx", pMyFileObject->DeviceObject);
+
 	//通过 RtlVolumeDeviceToDosName 获取Dos路径 也即是C: D: 等盘符
 	RtlVolumeDeviceToDosName(pMyFileObject->DeviceObject,&DosName);
  
@@ -580,6 +592,8 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	DriverObject->DriverUnload = DriverUnload;
 	//return STATUS_INVALID_ADDRESS;
 
+	PVOID pBuffer = ExAllocatePoolWithTag(PagedPool, 1024, 'niBI');
+
 	DbgPrint("DriverEntry\n");
 	UNICODE_STRING deviceStr = { 0 };
 	UNICODE_STRING symblicStr = { 0 };
@@ -608,7 +622,9 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	SYSTEM_PROCESS_INFORMATION spi = { 0 };
 	spi = *(PSYSTEM_PROCESS_INFORMATION)processInfoBuffer;
 	ANSI_STRING AnsiNtPath;
+	UNICODE_STRING uniDosPath = { 0 };
 	ULONG offset = 0;
+
 	while (offset < processInfoLength)
 	{
 		PSYSTEM_PROCESS_INFORMATION currentProcess = (PSYSTEM_PROCESS_INFORMATION)((PUCHAR)processInfoBuffer + offset);
@@ -622,6 +638,12 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 					DbgPrint("ProcessDirectory:%s", AnsiNtPath.Buffer);
 				else
 					DbgPrint("GetDosPathByProcessId Error\n");
+
+				if (NT_SUCCESS(status = GetFilePathFromProcessId(currentProcess->UniqueProcessId, &uniDosPath)))
+					DbgPrint("ProcessDirectory:%wZ", uniDosPath);
+				else
+					DbgPrint("GetFilePathFromProcessId Error\n");
+
 			}
 			else
 			{
@@ -639,9 +661,6 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 		offset += currentProcess->NextEntryOffset;
 	}
 
-	//UNICODE_STRING unicodeStr = { 0 };
-	//if(NT_SUCCESS(GetSystemVolumeLetter(&unicodeStr)))
-	//	DbgPrint("GetSystemVolumeLetter:%wZ",unicodeStr);
 	
 
 CLEANUP:
