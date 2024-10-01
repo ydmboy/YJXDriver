@@ -70,11 +70,12 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	//EXCEPTION_ACCESS_VIOLATION
 
-	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineBuffer;
-	DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutineDirect;
-	//DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineBuffer;
-	(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
-	//DeviceObject->Flags |= DO_BUFFERED_IO;
+	//DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineBuffer;
+	//DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutineBuffer;
+	//(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
+
+	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineBuffer;
+	(*DeviceObject)->Flags |= DO_BUFFERED_IO;
 
 	return status;
 
@@ -660,8 +661,6 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 			break;
 		offset += currentProcess->NextEntryOffset;
 	}
-
-	
 
 CLEANUP:
 	if (processInfoBuffer)

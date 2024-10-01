@@ -7,7 +7,10 @@ NTSTATUS DispatchRoutineBuffer(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 	UNREFERENCED_PARAMETER(DeviceObject);
 
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
-	DbgPrint(" DispatchRoutineBuffer:%d\n",stack->MajorFunction);
+	DbgPrint("disPatchh Routine Buffer\n");
+	DbgPrint("Stack MajorFunction:%d\n",stack->MajorFunction);
+	DbgPrint("IRP_MJ:%d\n",stack->Parameters.DeviceIoControl.IoControlCode);
+	//DbgPrint(" DispatchRoutineBuffer:%d\n",stack->MajorFunction);
 	NTSTATUS status = STATUS_SUCCESS;
 	ULONG inputBufferLength, outputBufferLength;
 	PVOID inputBuffer, outputBuffer;
@@ -46,6 +49,20 @@ NTSTATUS DispatchRoutineBuffer(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 			//outputBufferLength = stack->Parameters.DeviceIoControl.OutputBufferLength; = strlen("ooppqq")
 			Irp->IoStatus.Information = 20;
 			Irp->IoStatus.Status = STATUS_SUCCESS;// status
+
+			break;
+		}
+		case IOCTL_REFRESH_INFO:
+		{
+
+			//PKLDR_DATA_TABLE_ENTRY kPdrA = CONTAINING_RECORD(PsLoadedModuleList,KLDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
+			//PKLDR_DATA_TABLE_ENTRY kPdr = kPdrA->InLoadOrderLinks.Flink;
+			//while (kPdr != kPdrA)
+			//{
+			//	PrintKLDRDataTableEntry(kPdr);
+			//	kPdr = kPdr->InLoadOrderLinks.Flink;
+			//}
+			DbgPrint("IOCTL_REFRESH_INFO\n");
 
 			break;
 		}

@@ -1,6 +1,4 @@
 #pragma once
-#include "./include/spdlog/spdlog.h"
-#include "./include/spdlog/sinks/basic_file_sink.h"
 
 class DriverComm
 {
@@ -9,5 +7,6 @@ private:
 public:
 	DriverComm();
 	void SendIoctlExample();
+	void SendFlushList();
 };
 

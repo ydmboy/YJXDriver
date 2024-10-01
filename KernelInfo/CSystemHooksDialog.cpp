@@ -24,9 +24,16 @@ BEGIN_MESSAGE_MAP(CSystemHooksDialog, CDialogEx)
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
+
+void CSystemHooksDialog::OnFileSave()
+{
+    AfxMessageBox(_T("打印文件的操作"));
+}
 BOOL CSystemHooksDialog::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+
+
 
 
 
@@ -51,6 +58,24 @@ BOOL CSystemHooksDialog::OnInitDialog()
 	m_HooksListCtrl.SetItemText(0, 4, _T("Composition"));
 	m_HooksListCtrl.SetItemText(0, 5, _T("0xFFFFF9E000309DC0"));
 	m_HooksListCtrl.SetItemText(0, 6, _T("C:\\Windows\\System32\\ntoskrnl.exe"));
+
+
+
+	//CMenu* pMainMenu = new CMenu();
+ //   pMainMenu->CreateMenu();
+
+ //   // 创建文件子菜单
+ //   CMenu* pFileMenu = new CMenu();
+ //   pFileMenu->CreatePopupMenu();
+ //   pFileMenu->AppendMenu(MF_STRING, ID_FILE_OPEN, _T("打开"));
+ //   pFileMenu->AppendMenu(MF_STRING, ID_FILE_CLOSE, _T("退出"));
+
+ //   // 将文件子菜单添加到主菜单
+ //   pMainMenu->AppendMenu(MF_POPUP, (UINT_PTR)pFileMenu->m_hMenu, _T("文件"));
+ //   // 将菜单设置到对话框
+ //   SetMenu(pMainMenu);
+ //   // 更新菜单
+ //   DrawMenuBar();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }

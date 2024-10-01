@@ -10,6 +10,8 @@ class CSystemHooksDialog : public CDialogEx
 public:
     CSystemHooksDialog(CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CSystemHooksDialog();
+	void OnFileSave();
+
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME

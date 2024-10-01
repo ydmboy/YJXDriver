@@ -7,7 +7,6 @@
 #include "KernelInfo.h"
 #include "KernelInfoDlg.h"
 #include "afxdialogex.h"
-#include "CSystemHooksDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,8 +37,18 @@ BEGIN_MESSAGE_MAP(CKernelInfoDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_SIZE()
+	ON_COMMAND(ID_FILE_OPEN, &CKernelInfoDlg::OnFileSave)
+
 END_MESSAGE_MAP()
 
+
+
+void CKernelInfoDlg::OnFileSave()
+{
+	m_dc.SendFlushList();
+	m_dc.SendIoctlExample();
+	AfxMessageBox(_T("m_dc.SendFlushList"));
+}
 
 // CKernelInfoDlg 消息处理程序
 
@@ -65,17 +74,43 @@ BOOL CKernelInfoDlg::OnInitDialog()
 			pSysMenu->AppendMenu(MF_SEPARATOR);
 			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
 		}
+
+		// ydm add
+
+
+
+
 	}
+
+
+	CMenu* pMainMenu = new CMenu();
+    pMainMenu->CreateMenu();
+
+    // 创建文件子菜单
+    CMenu* pFileMenu = new CMenu();
+    pFileMenu->CreatePopupMenu();
+    pFileMenu->AppendMenu(MF_STRING, ID_FILE_OPEN, _T("打开"));
+    pFileMenu->AppendMenu(MF_STRING, ID_FILE_CLOSE, _T("退出"));
+
+    // 将文件子菜单添加到主菜单
+    pMainMenu->AppendMenu(MF_POPUP, (UINT_PTR)pFileMenu->m_hMenu, _T("文件"));
+    // 将菜单设置到对话框
+    SetMenu(pMainMenu);
+    // 更新菜单
+    DrawMenuBar();
+
 
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
+
+	m_HooksListCtrl.SetDataByKernel();
 
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	ShowWindow(SW_MAXIMIZE);
 
-	m_HooksListCtrl.SetDataByKernel();
+	//m_HooksListCtrl.SetDataByKernel();
 	//ShowWindow(SW_MINIMIZE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }

@@ -525,6 +525,12 @@ NTSTATUS EnumerateProcesses()
     return status;
 }
 
+
+//extern PLIST_ENTRY PsActiveProcessHead;
+//
+//PEPROCESS 
+
+
 NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 {
 	UNICODE_STRING fileName;
@@ -533,12 +539,16 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 	DbgPrint("Driver Loaded\n");
 
 	DriverObject->DriverUnload = DriverUnload;
-
 	HANDLE handle = PsGetCurrentProcessId();
-	DbgPrint("CurrentProcessId: %p\n", handle); 
-	DbgPrint("CurrentProcessId:0x%x\n",handle);
+	DbgPrint("CurrentProcessId: %p\n", handle);
+	DbgPrint("CurrentProcessId:0x%x\n", handle);
 
-	EnumerateProcesses();
+	DbgPrint("Handle:%d",PsGetCurrentProcessId());
+
+	//PEPROCESS process = { 0 };
+
+
+	//EnumerateProcesses();
 
 
 	//// 获取当前驱动程序的 LDR 数据表项

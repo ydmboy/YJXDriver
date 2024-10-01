@@ -7,6 +7,7 @@
 #define IDD_KERNELINFO_DIALOG           102
 #define IDI_ICON1                       131
 #define IDR_MAINFRAME                   131
+#define IDR_MENU1                       132
 #define IDC_LIST_HOOKS                  1001
 #define IDD_SYSTEM_HOOKS_DIALOG         2001
 
@@ -14,7 +15,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        132
+#define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           101

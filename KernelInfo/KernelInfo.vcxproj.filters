@@ -33,9 +33,6 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CSystemHooksDialog.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="config.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -57,9 +54,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CSystemHooksDialog.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CKernelInfoList.cpp">
@@ -87,9 +81,6 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="x64\Debug\asd.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="x64\Debug\微信图片_20240717090853.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

@@ -11,6 +11,8 @@ class CKernelInfoDlg : public CDialogEx
 // 构造
 public:
 	CKernelInfoDlg(CWnd* pParent = nullptr);	// 标准构造函数
+	void OnFileSave();
+
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -34,5 +36,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	CKernelInfoList m_HooksListCtrl;
+	DriverComm m_dc;
+	//CListCtrl m_HooksListCtrl;
+
+
 
 };
