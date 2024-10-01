@@ -45,6 +45,7 @@ END_MESSAGE_MAP()
 
 void CKernelInfoDlg::OnFileSave()
 {
+	AfxMessageBox(_T("OnFileSave"));
 	m_dc.SendFlushList();
 	m_dc.SendIoctlExample();
 	AfxMessageBox(_T("m_dc.SendFlushList"));

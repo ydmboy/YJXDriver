@@ -13,12 +13,13 @@ void Error(const char* format, Args&&... args)
 	//else
 	//{
 	//	logger_a = spdlog::basic_logger_mt("logger_a", LOG_FILE_DIR);
-	//}
-	//// 设置日志级别为错误级别
-	spdlog::set_level(spdlog::level::err);
-	
+	//
+
+	static auto file_logger = spdlog::basic_logger_mt("file_logger", "logs/my_log.log");
+    spdlog::set_default_logger(file_logger);
+
 	// 使用 SPDLog 的格式化功能，记录错误消息
-	spdlog::error(format, std::forward<Args>(args)...);
+	file_logger->error(format, std::forward<Args>(args)...);
 	
 }
 
