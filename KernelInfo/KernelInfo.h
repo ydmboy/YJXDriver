@@ -25,7 +25,7 @@ public:
 // 重写
 public:
 	virtual BOOL InitInstance();
-	DriverComm dc;
+	//DriverComm dc;
 
 // 实现
 

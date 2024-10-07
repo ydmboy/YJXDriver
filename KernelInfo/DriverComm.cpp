@@ -18,7 +18,7 @@ void DriverComm::SendFlushList()
 	HANDLE hDevice = CreateFile(
 		L"\\\\.\\ExampleDevice",   // 与驱动程序中的符号链接名称匹配
 		GENERIC_READ | GENERIC_WRITE,
-		0,
+		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		nullptr,
 		OPEN_EXISTING,
 		0,
@@ -55,18 +55,19 @@ void DriverComm::SendFlushList()
 
 void DriverComm::SendIoctlExample()
 {
+
 	HANDLE hDevice = CreateFile(
-		L"\\\\.\\ExampleDevice",   // 与驱动程序中的符号链接名称匹配
+		TEXT("\\\\.\\ExampleDevice1"),   // 与驱动程序中的符号链接名称匹配
 		GENERIC_READ | GENERIC_WRITE,
-		0,
+		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		nullptr,
 		OPEN_EXISTING,
-		0,
+		FILE_ATTRIBUTE_NORMAL,
 		nullptr
 	);
 	if (hDevice == INVALID_HANDLE_VALUE)
 	{
-		Error("ERROR:INVALID_HANDLE_VALUE,\tFILE:{},\tLine:{}\n", __FILE__, __LINE__);
+		Error("ERROR:INVALID_HANDLE_VALUE,\t{}\tFILE:{},\tLine:{}\n",GetLastError(),__FILE__, __LINE__);
 		return;
 	}
 	DWORD bytesReturned;

@@ -2,6 +2,7 @@
 
 #ifndef __MACROUTILS__H
 #define __MACROUTILS__H
+#include <ntifs.h>
 
 
 #define DRIVER_ERROR(fmt, ...) DbgPrint("[File: %s, Line: %d] " fmt, __FILE__, __LINE__, __VA_ARGS__)
@@ -45,6 +46,14 @@
 
 // LOG
 #define MAX_TYPE_OBJECT_TYPE_DEPTH 100
+#define DEVICE_DOS L"asd"
+#define DEVICE_NAME L"YDMDriver" ## DEVICE_DOS
+
+//#define DOS_NAME L"\\??\\"##DEVICE_NAME
+//#define EXE_NAME L"\\\\.\\"##DEVICE_NAME
+//
+
+   #define XY(x,y)    x##y
 
 
 #define EX_PUSH_LOCK ULONG_PTR

@@ -14,7 +14,6 @@
 #include "CommonFunctions.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
-
 #pragma comment(lib,"./lib/spdlogd.lib")
 
 #endif //PCH_H

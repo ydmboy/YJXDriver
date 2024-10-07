@@ -6,9 +6,9 @@
 extern "C"
 void DriverUnload(PDRIVER_OBJECT DriverObject)
 {
-    UNICODE_STRING SymbolicLinkName = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
-    IoDeleteSymbolicLink(&SymbolicLinkName);
-	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
+    //UNICODE_STRING SymbolicLinkName = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
+    //IoDeleteSymbolicLink(&SymbolicLinkName);
+	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice1");
 	IoDeleteSymbolicLink(&smLinkCode);
 	PDEVICE_OBJECT pdObj = DriverObject->DeviceObject;
 	UnistallAllProcessType();
@@ -63,28 +63,40 @@ NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 
 	NTSTATUS status = STATUS_SUCCESS;
 
-	CHECK_STATUS(status ,status =IoCreateDevice(DriverObject,  sizeof(DriverObject->DriverExtension), pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
+	CHECK_STATUS(status ,status =IoCreateDevice(DriverObject, 0, pUnicode_Device_String, FILE_DEVICE_UNKNOWN, 0, FALSE, DeviceObject));
+	if (NT_SUCCESS(status))
+	{
+		DbgPrint("CreateDevice successfully\n");
+	}
+
+	DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineBuffer;
+	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineBuffer;
+	(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
+	(*DeviceObject)->Flags |= DO_BUFFERED_IO;
 
 	CHECK_STATUS(status,status = IoCreateSymbolicLink(pUnicode_SymbolicLinkName, pUnicode_Device_String));
+	if (NT_SUCCESS(status))
+	{
+		DbgPrint("CreateDevice symblic successfully\n");
+	}
 
 
 	//EXCEPTION_ACCESS_VIOLATION
 
-	//DriverObject->MajorFunction[IRP_MJ_CREATE] = DispatchRoutineBuffer;
-	//DriverObject->MajorFunction[IRP_MJ_CLOSE] = DispatchRoutineBuffer;
-	//(*DeviceObject)->Flags &= ~DO_DEVICE_INITIALIZING;
-
-	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DispatchRoutineBuffer;
-	(*DeviceObject)->Flags |= DO_BUFFERED_IO;
 
 	return status;
 
 CLEANUP:
+	
+	
 	if (DeviceObject && *DeviceObject)
 	{
 		IoDeleteDevice(*DeviceObject);
-		DeviceObject = NULL;
+		*DeviceObject = NULL;
 	}
+
+
+
 	return status;
 }
 
@@ -599,19 +611,28 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	UNICODE_STRING deviceStr = { 0 };
 	UNICODE_STRING symblicStr = { 0 };
 	PDEVICE_OBJECT deviceObj = NULL;
+	//RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
+ //   RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
+
 	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
     RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
+
+	int x = XY(1, 2);
+
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
-	setMemoryProtect();
-	ListProcessTypeCallbacks();
+	
+	
+	//setMemoryProtect();
 
-	ListInfo li;
-	//li.PrintObjectTypeInfo();
-	li.PrintObTypeIndexList(li.GetObTypeIndexTable());
-	ListProcessTypeCallbacks();
+	//ListProcessTypeCallbacks();
+
+	//ListInfo li;
+	////li.PrintObjectTypeInfo();
+	//li.PrintObTypeIndexList(li.GetObTypeIndexTable());
+	//ListProcessTypeCallbacks();
 
 
-	DbgPrint("QuerySystem\n");
+	/*DbgPrint("QuerySystem\n");
 	if (!NT_SUCCESS( status = QuerySystemProcessInformation(&processInfoBuffer, &processInfoLength)))
 	{
 		return status;
@@ -661,6 +682,9 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 			break;
 		offset += currentProcess->NextEntryOffset;
 	}
+*/
+
+
 
 CLEANUP:
 	if (processInfoBuffer)

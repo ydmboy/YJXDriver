@@ -63,7 +63,6 @@ NTSTATUS DispatchRoutineBuffer(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 			//	kPdr = kPdr->InLoadOrderLinks.Flink;
 			//}
 			DbgPrint("IOCTL_REFRESH_INFO\n");
-
 			break;
 		}
 		default:
