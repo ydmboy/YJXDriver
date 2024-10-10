@@ -7,8 +7,8 @@
 #define EXPORT_FUNC_H
 
 
-extern "C"
-{
+
+
 	NTSYSAPI PCHAR PsGetProcessImageFileName(IN PEPROCESS pProcess);
 
 	NTSYSAPI
@@ -27,6 +27,5 @@ extern "C"
 		ULONG            ProcessInformationLength,
 		PULONG           ReturnLength
 	);
-}
 
 #endif

@@ -1,7 +1,7 @@
 #include "SecurityAgent.h"
 
 
-extern "C"
+
 NTSTATUS ListProcessTypeCallbacks()
 {
     OBJECT_TYPE* processObjectType = *PsProcessType;
@@ -26,7 +26,7 @@ NTSTATUS ListProcessTypeCallbacks()
     return STATUS_SUCCESS;
 }
 
-extern "C"
+
 NTSTATUS UnistallAllProcessType()
 {
 	OBJECT_TYPE* pspt = *(POBJECT_TYPE*)PsProcessType;
@@ -53,7 +53,7 @@ NTSTATUS UnistallAllProcessType()
 
 
 
-extern "C"
+
 OB_PREOP_CALLBACK_STATUS bdgPrintPara_pre_callback(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION OperationInformation)
 {
 	// 打印回调函数的参数和相关信息
@@ -62,7 +62,7 @@ OB_PREOP_CALLBACK_STATUS bdgPrintPara_pre_callback(PVOID RegistrationContext, PO
 	return OB_PREOP_SUCCESS;
 }
 
-extern "C"
+
 void PrintCallbackInfo(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION OperationInformation)
 {
 	PEPROCESS  peProcess = PsGetCurrentProcess();
@@ -109,7 +109,7 @@ void PrintCallbackInfo(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION 
 	DbgPrint("----------------------------------------------------------------------");
 }
 
-extern "C"
+
 void PrintAccessRights(ACCESS_MASK DesiredAccess)
 {
 	DbgPrint("    Access Rights:\n");
@@ -178,7 +178,7 @@ void PrintAccessRights(ACCESS_MASK DesiredAccess)
 		DbgPrint("      - PROCESS_ALL_ACCESS\n");
 }
 
-extern "C"
+
 OB_PREOP_CALLBACK_STATUS my_pre_callback(PVOID RegistrationContext, POB_PRE_OPERATION_INFORMATION OperationInformation)
 {
 
@@ -327,7 +327,7 @@ OB_PREOP_CALLBACK_STATUS my_pre_callback(PVOID RegistrationContext, POB_PRE_OPER
 	return OB_PREOP_SUCCESS;
 }
 
-extern "C"
+
 void setMemoryProtect()
 {
 	OB_CALLBACK_REGISTRATION ob1_callback_reg = { 0 };

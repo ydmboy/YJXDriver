@@ -1,14 +1,13 @@
 #include "AppDriverComm.h"
 #include "CommonHeader.h"
-#include "ListInfo.h"
 #include <minwindef.h>
 
-extern "C"
+
 void DriverUnload(PDRIVER_OBJECT DriverObject)
 {
     //UNICODE_STRING SymbolicLinkName = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice");
     //IoDeleteSymbolicLink(&SymbolicLinkName);
-	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(L"\\DosDevices\\ExampleDevice1");
+	UNICODE_STRING smLinkCode = RTL_CONSTANT_STRING(DRIVER_SYM_NAME);
 	IoDeleteSymbolicLink(&smLinkCode);
 	PDEVICE_OBJECT pdObj = DriverObject->DeviceObject;
 	UnistallAllProcessType();
@@ -19,7 +18,7 @@ void DriverUnload(PDRIVER_OBJECT DriverObject)
 	}
 }
 
-extern "C"
+
 NTSTATUS DriverCreateClose(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 {
     UNREFERENCED_PARAMETER(DeviceObject);
@@ -54,7 +53,7 @@ BOOLEAN IsValidUnicodeString(PUNICODE_STRING pstr)
     return TRUE;
 }
 
-extern "C"
+
 NTSTATUS CreateDevice(_In_ PDRIVER_OBJECT DriverObject,
 	_In_ PUNICODE_STRING pUnicode_Device_String,
 	_In_ PUNICODE_STRING pUnicode_SymbolicLinkName,
@@ -104,9 +103,9 @@ CLEANUP:
 //void IoDeleteDevice(
 //  [in] PDEVICE_OBJECT DeviceObject
 //);
-//extern "C"
+//
 //NTSTATUS  DeleteDevice()
-extern "C"
+
 NTSYSAPI
 NTSTATUS
 ZwQuerySystemInformation(
@@ -164,7 +163,7 @@ NTSTATUS QuerySystemProcessInformation(PVOID* ProcessInfoBuffer, ULONG* ProcessI
     return status;
 }
 
-extern "C" VOID FreeSystemProcessInformation(PVOID ProcessInfoBuffer)
+ VOID FreeSystemProcessInformation(PVOID ProcessInfoBuffer)
 {
     if (ProcessInfoBuffer)
     {
@@ -212,7 +211,7 @@ VOID PrintSystemProcessInformation(PSYSTEM_PROCESS_INFORMATION ProcessInfo, ULON
 
 // funcName: GetFilePathFromProcessId
 // unavailable  
-extern "C" NTSTATUS GetFilePathFromProcessId(
+ NTSTATUS GetFilePathFromProcessId(
 	IN HANDLE ProcessId,
 	OUT PUNICODE_STRING FilePath
 )
@@ -294,7 +293,7 @@ CLEANUP:
 	return status;
 }
 
-extern "C" NTSTATUS GetVolumeDeviceObject(PCWSTR VolumeName, PDEVICE_OBJECT* VolumeDeviceObject)
+ NTSTATUS GetVolumeDeviceObject(PCWSTR VolumeName, PDEVICE_OBJECT* VolumeDeviceObject)
 {
 	NTSTATUS status = STATUS_SUCCESS;
 	PFILE_OBJECT fileObject = NULL;
@@ -316,7 +315,7 @@ extern "C" NTSTATUS GetVolumeDeviceObject(PCWSTR VolumeName, PDEVICE_OBJECT* Vol
 	
 }
 
-extern "C" NTSTATUS GetProcessImagePath(
+ NTSTATUS GetProcessImagePath(
     IN HANDLE ProcessId,
     OUT PUNICODE_STRING FilePath
 )
@@ -386,7 +385,7 @@ extern "C" NTSTATUS GetProcessImagePath(
 }
 
 
-extern "C"
+
 NTSTATUS ConvertKernelToUsrPath()
 {
 	NTSTATUS status = STATUS_SUCCESS;
@@ -461,7 +460,7 @@ NTSTATUS GetSystemVolumeLetter(PUNICODE_STRING SystemVolumeLetter)
 }
 
 
-extern "C"
+
 NTSTATUS GetDosPathByProcessId(IN ULONG pid,OUT PANSI_STRING pAnsiNtPath)
 {
 	/*
@@ -593,7 +592,7 @@ NTSTATUS GetDosPathByProcessId(IN ULONG pid,OUT PANSI_STRING pAnsiNtPath)
 }
 
 
-extern "C"
+
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING RegistryPath)
 {
 
@@ -612,24 +611,16 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	UNICODE_STRING deviceStr = { 0 };
 	UNICODE_STRING symblicStr = { 0 };
 	PDEVICE_OBJECT deviceObj = NULL;
+
 	//RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
- //   RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
+	//RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
 
 
-	DbgPrint("%s",DRC);
+	RtlInitUnicodeString(&deviceStr, DRIVER_DEVICE_NAME);
+    RtlInitUnicodeString(&symblicStr, DRIVER_SYM_NAME);
 
-	#ifdef UNICODE
-		DbgPrint("Current character set: Unicode\n");
-	#else
-		DbgPrint("Current character set: Multi-Byte Character Set (MBCS)\n");
-	#endif
-
-
-
-	//RtlInitUnicodeString(&deviceStr, DRIVER_DEVICE_NAME);
-    RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
-
-	int x = XY(1, 2);
+	DbgPrint("DRIVER_DEVICE_NAME:%ws",DRIVER_DEVICE_NAME);
+	DbgPrint("DRIVER_SYM_NAME:%ws",DRIVER_SYM_NAME);
 
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
 	

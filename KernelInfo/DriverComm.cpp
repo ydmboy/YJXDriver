@@ -16,7 +16,7 @@ void DriverComm::SendFlushList()
 {
 	//afxMessageBox("SendflushList");
 	HANDLE hDevice = CreateFile(
-		L"\\\\.\\ExampleDevice",   // 与驱动程序中的符号链接名称匹配
+		L"\\\\.\\YDMDriver",   // 与驱动程序中的符号链接名称匹配
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		nullptr,
@@ -57,7 +57,7 @@ void DriverComm::SendIoctlExample()
 {
 
 	HANDLE hDevice = CreateFile(
-		TEXT("\\\\.\\ExampleDevice1"),   // 与驱动程序中的符号链接名称匹配
+		TEXT("\\\\.\\YDMDriver"),   // 与驱动程序中的符号链接名称匹配
 		GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		nullptr,

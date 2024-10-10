@@ -21,10 +21,10 @@
 	}
 
 
-//#define DRIVER_NAME L"YDMDriver"
-//
-//#define DRIVER_DEVICE_NAME L"\\device\\" ## DRIVER_NAME
-//#define DRIVER_SYM_NAME L"\\??\\" ## DRIVER_DEVICE_NAME
+#define DRIVER_NAME L"YDMDriver"
+
+#define DRIVER_DEVICE_NAME L"\\device\\" ## DRIVER_NAME
+#define DRIVER_SYM_NAME L"\\??\\" ## DRIVER_NAME
 
 
 #define IOCTL_EXAMPLE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x800, METHOD_BUFFERED, FILE_ANY_ACCESS)

@@ -1,7 +1,6 @@
 #include "AppDriverComm.h"
 #include "MacroUtils.h"
 
-extern "C"
 NTSTATUS DispatchRoutineBuffer(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 {
 	UNREFERENCED_PARAMETER(DeviceObject);
@@ -75,10 +74,8 @@ NTSTATUS DispatchRoutineBuffer(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 	return status;
 }
 
-extern "C"
 NTSTATUS DispatchRoutineDirect(_In_ PDEVICE_OBJECT DeviceObject, _In_ PIRP Irp)
 {
-	static bool rt = true;
 	UNREFERENCED_PARAMETER(DeviceObject);
 	PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
 	//DbgPrint("IOCTL_EXAMPLE:%d",IOCTL_EXAMPLE);
