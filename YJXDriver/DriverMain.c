@@ -592,6 +592,7 @@ NTSTATUS GetDosPathByProcessId(IN ULONG pid,OUT PANSI_STRING pAnsiNtPath)
 	return STATUS_SUCCESS;
 }
 
+
 extern "C"
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING RegistryPath)
 {
@@ -614,13 +615,27 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 	//RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
  //   RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
 
-	RtlInitUnicodeString(&deviceStr, L"\\Device\\ExampleDevice");
+
+	DbgPrint("%s",DRC);
+
+	#ifdef UNICODE
+		DbgPrint("Current character set: Unicode\n");
+	#else
+		DbgPrint("Current character set: Multi-Byte Character Set (MBCS)\n");
+	#endif
+
+
+
+	//RtlInitUnicodeString(&deviceStr, DRIVER_DEVICE_NAME);
     RtlInitUnicodeString(&symblicStr, L"\\DosDevices\\ExampleDevice");
 
 	int x = XY(1, 2);
 
 	CreateDevice(DriverObject,&deviceStr, &symblicStr,&deviceObj);
 	
+
+
+
 	
 	//setMemoryProtect();
 
