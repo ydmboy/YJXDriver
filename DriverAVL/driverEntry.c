@@ -188,6 +188,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pobj, PUNICODE_STRING rgs)
 		PrintKLDRDataTableEntry(kPdr);
 		kPdr = kPdr->InLoadOrderLinks.Flink;
 	}
+	DbgPrint("DriverAVL\n");
 
 
 
